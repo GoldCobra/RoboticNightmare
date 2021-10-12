@@ -45,14 +45,21 @@ async function messageManager(msg){
     if(token[0] == "!mscruleset"){
 			if(msg.bot) return;
 			
-      msg.reply("https://bit.ly/2FprBJq");
+      msg.channel.send("https://bit.ly/2FprBJq");
 			
 		}
 
     if(token[0] == "!smsruleset"){
 			if(msg.bot) return;
 			
-      msg.reply("http://bit.ly/3jvMGBV");
+      msg.channel.send("http://bit.ly/3jvMGBV");
+			
+		}
+
+    if(token[0] == "!soon"){
+			if(msg.bot) return;
+			
+      msg.channel.send("Soon ™");
 			
 		}
 
