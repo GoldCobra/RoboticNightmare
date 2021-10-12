@@ -35,12 +35,27 @@ async function messageManager(msg){
         });
 			});	
 		}
-		if(token[0] == "!robo"){
+		if(token[0] == "!robosend"){
 			fs.readFile('MSG.txt', 'utf8', function(err, data) {
 				if (err) throw err;
-        client.channels.cache.get('896363013811097650').send(data);
+        client.channels.cache.get('892043307738341386').send(data);
 			});	
 		}
+
+    if(token[0] == "!mscruleset"){
+			if(msg.bot) return;
+			
+      msg.reply("https://bit.ly/2FprBJq");
+			
+		}
+
+    if(token[0] == "!smsruleset"){
+			if(msg.bot) return;
+			
+      msg.reply("http://bit.ly/3jvMGBV");
+			
+		}
+
 		if(token[0] == "!mscrating"){
 			const url = "https://docs.google.com/spreadsheets/d/1ruQJgxLDnpGT1r41RqHV9m5079OsL0DJa2-aVdFpyFI/gviz/tq?";
 			axios.get(url)
@@ -99,7 +114,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 	const member = reaction.message.guild.members.cache.get(user.id);
 
-	if(reaction.message.id == "896377803501608980"){
+	if(reaction.message.id == "896450856298381312"){
 		const role1 = "862237914863239198";
 		const role2 = "680810288605298744";
 		if(reaction.emoji.name == '✅'){
@@ -110,7 +125,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		}
 	}
 
-	if(reaction.message.id == "896377838410817567"){
+	if(reaction.message.id == "896450908928507965"){
 		const role3= "862237991635124244";
 		const role4 = "781487757176209428";
 		if(reaction.emoji.name== '✅'){
@@ -121,14 +136,14 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		}
 	}
 
-	if(reaction.message.id == "896377882874617897"){
+	if(reaction.message.id == "896450949474816100"){
 		const role5 = "862238161395908628";
 		if(reaction.emoji.name == '🏆'){
 			member.roles.add(role5);
 		}		
 	}
 
-	if(reaction.message.id == "896377916072558634"){
+	if(reaction.message.id == "896450993531801672"){
 		const role6 = "862238264752996372";
 		if(reaction.emoji.name == '🧩'){
 			member.roles.add(role6);
@@ -138,7 +153,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 client.on("messageReactionRemove", (reaction, user)=> {
 	const member = reaction.message.guild.members.cache.get(user.id);
-  if(reaction.message.id == "896377803501608980"){
+  if(reaction.message.id == "896450856298381312"){
 		if(reaction.emoji.name == '✅'){
 			member.roles.remove("862237914863239198");
 		}
@@ -148,7 +163,7 @@ client.on("messageReactionRemove", (reaction, user)=> {
 		}
 	}
 
-	if(reaction.message.id == "896377838410817567"){
+	if(reaction.message.id == "896450908928507965"){
 		if(reaction.emoji.name == '✅'){
 			member.roles.remove("862237991635124244");
 		}
@@ -158,13 +173,13 @@ client.on("messageReactionRemove", (reaction, user)=> {
 		}
 	}
 
-	if(reaction.message.id == "896377882874617897"){
+	if(reaction.message.id == "896450949474816100"){
 		if(reaction.emoji.name == '🏆'){
 			member.roles.remove("862238161395908628");
 		}
 	}
 
-  if(reaction.message.id == "896377916072558634"){
+  if(reaction.message.id == "896450993531801672"){
 		if(reaction.emoji.name == '🧩'){
 			member.roles.remove("862238264752996372");
 		}
