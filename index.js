@@ -93,22 +93,33 @@ async function messageManager(msg){
 		}
 
 		if(token[0] == "!mscrating"){
-			const url = "https://docs.google.com/spreadsheets/d/1ruQJgxLDnpGT1r41RqHV9m5079OsL0DJa2-aVdFpyFI/gviz/tq?";
-			axios.get(url)
-			.then(function (response) {
-				const data = JSON.parse(response.data.substr(47).slice(0,-2));
-				const newData = [];
+			try {
+        sql.connect(config, function(err) {
+          var request = new sql.Request();
 
-				data.table.rows.map((main)=>{
-					newData.push(main.c[0].v);
-				})
-				msg.channel.send(newData.join('\n'));
-				// I need this data here
-				return response.data;
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+          let query = "exec GetRatingsForSpreadsheetMSC";
+          request.query(query, function(err, recordset) {
+            if (err) {
+              console.log(err);
+              msg.react('❌');
+            }
+            else {
+              let data = recordset.recordset;
+				      const newData = [];
+              for (let i = 0; i < recordset.recordset.length; i++) {
+                newData.push(recordset.recordset[i].line);
+                console.log(recordset.recordset[i].line);
+              }
+              
+				      msg.reply(newData.join('\n'));
+            }
+          })
+        })
+      }
+      catch (error) {
+        console.log(error);
+        msg.react('❌');
+      }
 		}
 
 		if(token[0] == "!smsrating"){
