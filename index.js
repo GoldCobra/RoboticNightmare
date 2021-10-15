@@ -15,6 +15,23 @@ client.on('guildMemberAdd', (member)=>{
 
 var fs = require('fs');
 
+let sql = require('mssql');
+
+let config = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  server: 'yew.arvixe.com',
+  database: 'MarioStrikers',
+  options: {
+      encrypt: true,
+      trustServerCertificate: true,
+      port: 443,
+      cryptoCredentialsDetails: {
+            minVersion: 'TLSv1'
+        }
+  }
+}
+
 client.on("messageCreate", messageManager);
 
 async function messageManager(msg){
@@ -23,7 +40,7 @@ async function messageManager(msg){
 	if(msg.channel.id){
 		var token = msg.content.split(" ");
 		if(token[0] == "!roboedit"){
-			fs.readFile('MSG.txt', 'utf8', function(err, data) {
+			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
 				if (err) throw err;
 
        msg.channel.messages.fetch( 
@@ -35,32 +52,44 @@ async function messageManager(msg){
         });
 			});	
 		}
+
 		if(token[0] == "!robosend"){
-			fs.readFile('MSG.txt', 'utf8', function(err, data) {
+			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
 				if (err) throw err;
         client.channels.cache.get('892043307738341386').send(data);
-			});	
+			});
 		}
 
-    if(token[0] == "!mscruleset"){
+    		if(token[0] == "!sandbox"){
+			fs.readFile('msg_sandbox.txt', 'utf8', function(err, data) {
+				if (err) throw err;
+        client.channels.cache.get('897757084299431936').send(data);
+			});
+		}
+
+    if(token[0] == "!mscrules"){
 			if(msg.bot) return;
 			
-      msg.channel.send("https://bit.ly/2FprBJq");
-			
+      msg.channel.send("https://bit.ly/3BBSwK5");
 		}
 
-    if(token[0] == "!smsruleset"){
+    if(token[0] == "!smsrules"){
 			if(msg.bot) return;
 			
-      msg.channel.send("http://bit.ly/3jvMGBV");
-			
+      msg.channel.send("https://bit.ly/3mLDBHf");
 		}
 
+    if(token[0] == "!tlmsc"){
+			if(msg.bot) return;
+			
+      msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189371847381022/unknown.png");
+      msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189471533400074/unknown.png");
+		}
+    
     if(token[0] == "!soon"){
 			if(msg.bot) return;
 			
       msg.channel.send("Soon ™");
-			
 		}
 
 		if(token[0] == "!mscrating"){
@@ -73,7 +102,7 @@ async function messageManager(msg){
 				data.table.rows.map((main)=>{
 					newData.push(main.c[0].v);
 				})
-				msg.reply(newData.join('\n'));
+				msg.channel.send(newData.join('\n'));
 				// I need this data here
 				return response.data;
 			})
@@ -94,7 +123,7 @@ async function messageManager(msg){
 				data.table.rows.map((main)=>{
 					newData2.push(main.c[0].v);
 				})
-				msg.reply(newData2.join('\n'));
+				msg.channel.send(newData2.join('\n'));
 				// I need this data here ^^
 				return response.data;
 			})
@@ -102,6 +131,165 @@ async function messageManager(msg){
 				console.log(error);
 			});
 		}
+
+    if(token[0] == "!mslmsc"){
+			const url3 = "https://docs.google.com/spreadsheets/d/1Cf5YggxcwNVMCTyQ1Xz7wC7OaOxVoC1rQIeEJSXo6s8/gviz/tq?";
+			
+			if(msg.bot) return;
+      msg.channel.send("**MSL Season 1** — MSC Rankings");
+			axios.get(url3)
+			.then(function (response) {
+				const data = JSON.parse(response.data.substr(47).slice(0,-2));
+				const newData3 = [];
+
+				data.table.rows.map((main)=>{
+					newData3.push(main.c[0].v);
+				})
+				msg.channel.send(newData3.join('\n'));
+				// I need this data here ^^
+				return response.data;
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		}
+    
+    if(token[0] == "!mslsms"){
+			const url4 = "https://docs.google.com/spreadsheets/d/1elh4wTVHNR0dv-QNklaNLMUNU07VKuaFkZkU9G2XWQ0/gviz/tq?";
+			
+			if(msg.bot) return;
+      msg.channel.send("**MSL Season 1** — SMS Rankings");
+			axios.get(url4)
+			.then(function (response) {
+				const data = JSON.parse(response.data.substr(47).slice(0,-2));
+				const newData4 = [];
+
+				data.table.rows.map((main)=>{
+					newData4.push(main.c[0].v);
+				})
+				msg.channel.send(newData4.join('\n'));
+				// I need this data here ^^
+				return response.data;
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		}
+    
+    if(token[0] == "!mscreport") {
+      if(msg.bot) return;
+      try {
+        let score = "";
+
+        // get the score and the discord ids if available
+        let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+        score = token[2];
+        let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+
+        // set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
+        if (p1 == undefined)
+          p1 = token[1];
+        else
+          p1 = token[1] + p1.username;
+
+        if (p2 == undefined)
+          p2 = token[3];
+        else
+          p2 = token[3] + p2.username;
+
+        console.log(p1);
+        console.log(p2);
+        console.log(token.length);
+
+        sql.connect(config, function(err) {
+          // create the request object
+          var request = new sql.Request();
+
+          let query = "";
+          
+          if (token.length == 4)
+            query = "exec reportScoreMSC '" + p1 + "', '" + p2 + "', '" + score + "';"
+          else if (token.length == 5) {
+            query = "exec reportScoreMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
+          }
+          else if (token.length == 6) {
+            query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
+          }
+          else if (token.length == 7) {
+            query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
+          }
+
+          console.log(query);
+
+          request.query(query, function(err, recordset) {
+              if (err) console.log(err) })
+        })
+
+        // todo: broken, need to fix - also, add X or something if it fails
+        msg.react('☑️');
+      }
+      catch(error) {
+        console.log(error);
+        msg.react('❌');
+      }
+    }
+
+    if(token[0] == "!smsreport") {
+      if(msg.bot) return;
+      try {
+        let score = "";
+
+        // get the score and the discord ids if available
+        let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+        score = token[2];
+        let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+
+        // set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
+        if (p1 == undefined)
+          p1 = token[1];
+        else
+          p1 = token[1] + p1.username;
+
+        if (p2 == undefined)
+          p2 = token[3];
+        else
+          p2 = token[3] + p2.username;
+
+        console.log(p1);
+        console.log(p2);
+        console.log(token.length);
+
+        sql.connect(config, function(err) {
+          // create the request object
+          var request = new sql.Request();
+
+          let query = "";
+          
+          if (token.length == 4)
+            query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "';"
+          else if (token.length == 5) {
+            query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
+          }
+          else if (token.length == 6) {
+            query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
+          }
+          else if (token.length == 7) {
+            query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
+          }
+
+          console.log(query);
+
+          request.query(query, function(err, recordset) {
+              if (err) console.log(err) })
+        })
+
+        msg.react('☑️');
+      }
+      catch(error) {
+        console.log(error);
+        msg.react('❌');
+      }
+    }
 	}
 }
 
