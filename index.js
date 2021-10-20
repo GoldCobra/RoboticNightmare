@@ -79,6 +79,18 @@ async function messageManager(msg){
       msg.channel.send("https://bit.ly/3mLDBHf");
 		}
 
+    if(token[0] == "!mscbracket"){
+			if(msg.bot) return;
+			
+      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/900106708309909534/unknown.png");
+		}
+
+    if(token[0] == "!smsbracket"){
+			if(msg.bot) return;
+			
+      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/900106862177976440/unknown.png");
+		}
+
     if(token[0] == "!tlmsc"){
 			if(msg.bot) return;
 			
@@ -97,7 +109,7 @@ async function messageManager(msg){
         sql.connect(config, function(err) {
           var request = new sql.Request();
 
-          let query = "exec GetRatingsForSpreadsheetMSC";
+          let query = "exec GetRatingsForDiscordMSC";
           request.query(query, function(err, recordset) {
             if (err) {
               console.log(err);
@@ -111,7 +123,7 @@ async function messageManager(msg){
                 console.log(recordset.recordset[i].line);
               }
               
-				      msg.reply(newData.join('\n'));
+				      msg.channel.send(newData.join('\n'));
             }
           })
         })
@@ -127,7 +139,7 @@ async function messageManager(msg){
         sql.connect(config, function(err) {
           var request = new sql.Request();
 
-          let query = "exec GetRatingsForSpreadsheetSMS";
+          let query = "exec GetRatingsForDiscordSMS";
           request.query(query, function(err, recordset) {
             if (err) {
               console.log(err);
@@ -141,7 +153,7 @@ async function messageManager(msg){
                 console.log(recordset.recordset[i].line);
               }
               
-				      msg.reply(newData.join('\n'));
+				      msg.channel.send(newData.join('\n'));
             }
           })
         })
