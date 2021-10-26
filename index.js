@@ -82,20 +82,20 @@ async function messageManager(msg){
     if(token[0] == "!mscbracket"){
 			if(msg.bot) return;
 			
-      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/900850884668440657/unknown.png");
+      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/901525316130984026/unknown.png");
 		}
 
     if(token[0] == "!smsbracket"){
 			if(msg.bot) return;
 			
-      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/900106862177976440/unknown.png");
+      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/902524585847713812/unknown.png");
 		}
 
     if(token[0] == "!tlmsc"){
 			if(msg.bot) return;
 			
       msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189371847381022/unknown.png");
-      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/900915579270103103/unknown.png");
+      msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189471533400074/unknown.png");
 		}
     
     if(token[0] == "!soon"){
