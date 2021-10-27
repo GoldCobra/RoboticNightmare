@@ -8,6 +8,8 @@ const client = new Client({
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
+const stadiums = ['The Classroom', 'The Sand Tomb', 'The Palace', 'Thunder Island', 'Pipeline Central', 'Konga Coliseum', 'The Underground', 'The Wastelands', 'Crater Field', 'The Dump', 'The Vice', 'Crystal Canyon', 'The Battle Dome', 'The Lava Pit', 'Galactic Stadium', 'Bowser Stadium', 'Stormship Stadium'];
+
 client.on('guildMemberAdd', (member)=>{
 	const rulesChannel = "894852972117372988";
 	member.guild.channels.cache.get("892043307738341386").send(`Welcome to the server <@${member.id}>. Be sure to checkout the rules ${member.guild.channels.cache.get(rulesChannel).toString()}`);
@@ -16,6 +18,10 @@ client.on('guildMemberAdd', (member)=>{
 var fs = require('fs');
 
 let sql = require('mssql');
+
+let rando = 0;
+
+const interval = 30;
 
 let config = {
   user: process.env.DB_USER,
@@ -30,6 +36,16 @@ let config = {
             minVersion: 'TLSv1'
         }
   }
+}
+
+client.on("ready", statusManager);
+
+async function statusManager(){
+  client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
+
+  rando = Math.floor(Math.random() * 17);
+
+  setTimeout(statusManager, 60000 * interval);
 }
 
 client.on("messageCreate", messageManager);
