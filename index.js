@@ -69,58 +69,28 @@ async function messageManager(msg){
 			});	
 		}
 
-		if(token[0] == "!robosend"){
+		else if(token[0] == "!robosend"){
 			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
 				if (err) throw err;
         client.channels.cache.get('892043307738341386').send(data);
 			});
 		}
 
-    		if(token[0] == "!sandbox"){
+    else if(token[0] == "!sandbox"){
 			fs.readFile('msg_sandbox.txt', 'utf8', function(err, data) {
 				if (err) throw err;
         client.channels.cache.get('897757084299431936').send(data);
 			});
 		}
 
-    if(token[0] == "!mscrules"){
-			if(msg.bot) return;
-			
-      msg.channel.send("https://bit.ly/3BBSwK5");
-		}
-
-    if(token[0] == "!smsrules"){
-			if(msg.bot) return;
-			
-      msg.channel.send("https://bit.ly/3mLDBHf");
-		}
-
-    if(token[0] == "!mscbracket"){
-			if(msg.bot) return;
-			
-      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/901525316130984026/unknown.png");
-		}
-
-    if(token[0] == "!smsbracket"){
-			if(msg.bot) return;
-			
-      msg.channel.send("https://cdn.discordapp.com/attachments/816320433850155018/902524585847713812/unknown.png");
-		}
-
-    if(token[0] == "!tlmsc"){
+    else if(token[0] == "!tlmsc"){
 			if(msg.bot) return;
 			
       msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189371847381022/unknown.png");
       msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189471533400074/unknown.png");
 		}
-    
-    if(token[0] == "!soon"){
-			if(msg.bot) return;
-			
-      msg.channel.send("Soon ™");
-		}
 
-		if(token[0] == "!mscrating"){
+		else if(token[0] == "!mscrating"){
 			try {
         sql.connect(config, function(err) {
           var request = new sql.Request();
@@ -150,7 +120,7 @@ async function messageManager(msg){
       }
 		}
 
-		if(token[0] == "!smsrating"){
+		else if(token[0] == "!smsrating"){
 			try {
         sql.connect(config, function(err) {
           var request = new sql.Request();
@@ -180,7 +150,7 @@ async function messageManager(msg){
       }
 		}
 
-    if(token[0] == "!mslmsc"){
+    else if(token[0] == "!mslmsc"){
 			const url3 = "https://docs.google.com/spreadsheets/d/1Cf5YggxcwNVMCTyQ1Xz7wC7OaOxVoC1rQIeEJSXo6s8/gviz/tq?";
 			
 			if(msg.bot) return;
@@ -202,7 +172,7 @@ async function messageManager(msg){
 			});
 		}
     
-    if(token[0] == "!mslsms"){
+    else if(token[0] == "!mslsms"){
 			const url4 = "https://docs.google.com/spreadsheets/d/1elh4wTVHNR0dv-QNklaNLMUNU07VKuaFkZkU9G2XWQ0/gviz/tq?";
 			
 			if(msg.bot) return;
@@ -224,7 +194,7 @@ async function messageManager(msg){
 			});
 		}
     
-    if(token[0] == "!mscreport") {
+    else if(token[0] == "!mscreport") {
       if(msg.bot) return;
       try {
         let score = "";
@@ -282,7 +252,7 @@ async function messageManager(msg){
       }
     }
 
-    if(token[0] == "!smsreport") {
+    else if(token[0] == "!smsreport") {
       if(msg.bot) return;
       try {
         let score = "";
@@ -332,6 +302,36 @@ async function messageManager(msg){
         })
 
         msg.react('☑️');
+      }
+      catch(error) {
+        console.log(error);
+        msg.react('❌');
+      }
+    }
+    
+    else if (token[0].substring(0, 1) == "!") {
+      if(msg.bot) return;
+      try {
+        sql.connect(config, function(err) {
+          var request = new sql.Request();
+
+          let query = "select * from DiscordCommands where Token = '" + token[0] + "'";
+          request.query(query, function(err, recordset) {
+            if (err) {
+              console.log(err);
+              console.react('❌');
+            }
+            else {
+              let data = recordset.recordset;
+              if (recordset.recordset.length == 0) {
+                return;
+              }
+              else {
+                msg.channel.send(recordset.recordset[0].Response);
+              }
+            }
+          })
+        })
       }
       catch(error) {
         console.log(error);
