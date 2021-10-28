@@ -53,7 +53,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg){
 	if (msg.author.bot) return
 
-	if(msg.channel.id){
+	if(msg.channel.id == 902508091680108574 || msg.channel.id == 902508170126180352){
 		var token = msg.content.split(" ");
 		if(token[0] == "!roboedit"){
 			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
@@ -384,7 +384,9 @@ async function messageManager(msg){
         msg.react('❌');
       }
     }
-	}
+	} else {
+    console.log("Outside development environment")
+  }
 }
 
 //REACTION ROLES
