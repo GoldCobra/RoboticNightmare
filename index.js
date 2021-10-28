@@ -38,14 +38,14 @@ let config = {
   }
 }
 
-client.on("ready", statusManager);
+client.on("ready", cronJob);
 
-async function statusManager(){
+async function cronJob(){
   client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 
   rando = Math.floor(Math.random() * 17);
 
-  setTimeout(statusManager, 60000 * interval);
+  setTimeout(cronJob, 60000 * interval);
 }
 
 client.on("messageCreate", messageManager);
@@ -82,6 +82,52 @@ async function messageManager(msg){
         client.channels.cache.get('897757084299431936').send(data);
 			});
 		}
+
+    else if(token[0] == "!upsertcommand") {
+      try {
+        sql.connect(config, function(err) {
+          var request = new sql.Request();
+
+          let param = "";
+
+          for (let i = 2; i < token.length; i++) {
+            param += token[i] + " ";
+          }
+
+          let query = "exec UpsertCommand '" + token[1] + "', '" + param + "'";
+
+          request.query(query, function(err, recordset) {
+                  if (err) console.log(err) });
+        })
+        
+        msg.react('☑️');
+      }
+      
+      catch (error) {
+        console.log(error);
+        msg.react('❌');
+      }
+    }
+
+    else if(token[0] == "!removecommand") {
+      try {
+        sql.connect(config, function(err) {
+          var request = new sql.Request();
+
+          let query = "delete from discordCommands where token = '!" + token[1] + "'";
+
+          request.query(query, function(err, recordset) {
+            if (err) console.log(err) });
+        })
+        
+        msg.react('☑️');
+      }
+      
+      catch (error) {
+        console.log(error);
+        msg.react('❌');
+      }
+    }
 
     else if(token[0] == "!tlmsc"){
 			if(msg.bot) return;
