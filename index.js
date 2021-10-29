@@ -3,17 +3,20 @@ const axios= require('axios')
 
 const { Client, Intents, Permissions } = require('discord.js');
 
+const CONSTANTS = require('./constants');
+
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
+
 
 const stadiums = ['The Classroom', 'The Sand Tomb', 'The Palace', 'Thunder Island', 'Pipeline Central', 'Konga Coliseum', 'The Underground', 'The Wastelands', 'Crater Field', 'The Dump', 'The Vice', 'Crystal Canyon', 'The Battle Dome', 'The Lava Pit', 'Galactic Stadium', 'Bowser Stadium', 'Stormship Stadium'];
 
 client.on('guildMemberAdd', (member)=>{
 	const rulesChannel = "894852972117372988";
 	member.guild.channels.cache.get("892043307738341386").send(`Welcome to the server <@${member.id}>. Be sure to checkout the rules ${member.guild.channels.cache.get(rulesChannel).toString()}`);
-})
+});
 
 var fs = require('fs');
 
@@ -48,6 +51,21 @@ async function cronJob(){
   setTimeout(cronJob, 60000 * interval);
 }
 
+async function roleValidator(client, authorId, acceptedRoles) {
+  let validation = false;
+  const strikersGuild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
+  await strikersGuild.members.fetch(authorId)
+  .then((user) => {
+    user._roles.forEach(userRole => {
+      if (acceptedRoles.includes(userRole)) {
+        validation = true;
+        return;
+        }
+      });
+  });
+  return validation
+}
+
 client.on("messageCreate", messageManager);
 
 async function messageManager(msg){  
@@ -56,17 +74,13 @@ async function messageManager(msg){
 	if(msg.channel.id == 902508091680108574 || msg.channel.id == 902508170126180352){
     var token = msg.content.split(" ");
     if(token[0] == "!test"){
-      const strikersGuild = client.guilds.cache.get("268737069939949569");
-      strikersGuild.members.fetch(msg.author.id)
-      .then((user) => {
-        console.log(user.permissions)
-        
-        userPermissions = new Permissions(user.permissions)
-        console.log(userPermissions.has(Permissions.FLAGS.ADMINISTRATOR))
-
-
-      });
-    }
+     validate = await roleValidator(client, msg.author.id, [CONSTANTS.ROLES.ADMIN_ROLE,CONSTANTS.ROLES.DEVELOPER_ROLE])
+     if (validate) {
+       msg.channel.send("You have permission")
+     } else {
+       msg.channel.send("You do not have permission")
+     }
+  }
 		if(token[0] == "!roboedit"){
 			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
 				if (err) throw err;
