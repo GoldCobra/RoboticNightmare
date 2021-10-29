@@ -1,7 +1,7 @@
 require('dotenv').config()
 const axios= require('axios')
 
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, Permissions } = require('discord.js');
 
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
@@ -50,11 +50,23 @@ async function cronJob(){
 
 client.on("messageCreate", messageManager);
 
-async function messageManager(msg){
+async function messageManager(msg){  
 	if (msg.author.bot) return
 
 	if(msg.channel.id == 902508091680108574 || msg.channel.id == 902508170126180352){
-		var token = msg.content.split(" ");
+    var token = msg.content.split(" ");
+    if(token[0] == "!test"){
+      const strikersGuild = client.guilds.cache.get("268737069939949569");
+      strikersGuild.members.fetch(msg.author.id)
+      .then((user) => {
+        console.log(user.permissions)
+        
+        userPermissions = new Permissions(user.permissions)
+        console.log(userPermissions.has(Permissions.FLAGS.ADMINISTRATOR))
+
+
+      });
+    }
 		if(token[0] == "!roboedit"){
 			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
 				if (err) throw err;
