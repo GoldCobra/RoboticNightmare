@@ -71,7 +71,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg){  
 	if (msg.author.bot) return
 
-	if(msg.channel.id == 902508091680108574 || msg.channel.id == 902508170126180352){
+	if(msg.channel.id){
     var token = msg.content.split(" ");
     if(token[0] == "!test"){
      validate = await roleValidator(client, msg.author.id, [CONSTANTS.ROLES.ADMIN_ROLE,CONSTANTS.ROLES.DEVELOPER_ROLE])
@@ -410,9 +410,7 @@ async function messageManager(msg){
         msg.react('❌');
       }
     }
-	} else {
-    console.log("Outside development environment")
-  }
+	}
 }
 
 //REACTION ROLES
