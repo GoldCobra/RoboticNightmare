@@ -94,7 +94,10 @@ async function messageManager(msg){
             param += token[i] + " ";
           }
 
-          let query = "exec UpsertCommand '" + token[1] + "', '" + param + "'";
+          let query = "exec UpsertCommand @token, @response";
+
+          request.input('token', token[1]);
+          request.input('response', param);
 
           request.query(query, function(err, recordset) {
                   if (err) console.log(err) });
@@ -114,7 +117,9 @@ async function messageManager(msg){
         sql.connect(config, function(err) {
           var request = new sql.Request();
 
-          let query = "delete from discordCommands where token = '!" + token[1] + "'";
+          let query = "delete from discordCommands where token = @token";
+
+          request.input("token", "!" + param[1]);
 
           request.query(query, function(err, recordset) {
             if (err) console.log(err) });
@@ -272,7 +277,8 @@ async function messageManager(msg){
           let query = "";
           
           if (token.length == 4)
-            query = "exec reportScoreMSC '" + p1 + "', '" + p2 + "', '" + score + "';"
+            query = "exec reportScoreMSC @p1, @p2, @score;"
+          /*
           else if (token.length == 5) {
             query = "exec reportScoreMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
           }
@@ -282,8 +288,12 @@ async function messageManager(msg){
           else if (token.length == 7) {
             query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
           }
-
+          */
           console.log(query);
+
+          request.input("p1", p1);
+          request.input("p2", p2);
+          request.input("score", score);
 
           request.query(query, function(err, recordset) {
               if (err) console.log(err) })
@@ -330,7 +340,8 @@ async function messageManager(msg){
           let query = "";
           
           if (token.length == 4)
-            query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "';"
+            query = "exec reportScoreSMS @p1, @p2, @score;"
+          /*
           else if (token.length == 5) {
             query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
           }
@@ -340,8 +351,12 @@ async function messageManager(msg){
           else if (token.length == 7) {
             query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
           }
-
+          */
           console.log(query);
+
+          request.input("p1", p1);
+          request.input("p2", p2);
+          request.input("score", score);
 
           request.query(query, function(err, recordset) {
               if (err) console.log(err) })
@@ -361,7 +376,9 @@ async function messageManager(msg){
         sql.connect(config, function(err) {
           var request = new sql.Request();
 
-          let query = "select * from DiscordCommands where Token = '" + token[0] + "'";
+          let query = "select * from DiscordCommands where Token = @token";
+          request.input("token", token[0]);
+          
           request.query(query, function(err, recordset) {
             if (err) {
               console.log(err);
