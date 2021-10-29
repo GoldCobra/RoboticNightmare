@@ -68,19 +68,12 @@ async function roleValidator(client, authorId, acceptedRoles) {
 
 client.on("messageCreate", messageManager);
 
-async function messageManager(msg){  
+async function messageManager(msg){
 	if (msg.author.bot) return
 
 	if(msg.channel.id){
     var token = msg.content.split(" ");
-    if(token[0] == "!test"){
-     validate = await roleValidator(client, msg.author.id, [CONSTANTS.ROLES.ADMIN_ROLE,CONSTANTS.ROLES.DEVELOPER_ROLE])
-     if (validate) {
-       msg.channel.send("You have permission")
-     } else {
-       msg.channel.send("You do not have permission")
-     }
-  }
+    
 		if(token[0] == "!roboedit"){
 			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
 				if (err) throw err;
