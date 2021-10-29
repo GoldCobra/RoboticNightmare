@@ -1,19 +1,22 @@
 require('dotenv').config()
 const axios= require('axios')
 
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, Permissions } = require('discord.js');
+
+const CONSTANTS = require('./constants');
 
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
+
 const stadiums = ['The Classroom', 'The Sand Tomb', 'The Palace', 'Thunder Island', 'Pipeline Central', 'Konga Coliseum', 'The Underground', 'The Wastelands', 'Crater Field', 'The Dump', 'The Vice', 'Crystal Canyon', 'The Battle Dome', 'The Lava Pit', 'Galactic Stadium', 'Bowser Stadium', 'Stormship Stadium'];
 
 client.on('guildMemberAdd', (member)=>{
 	const rulesChannel = "894852972117372988";
 	member.guild.channels.cache.get("892043307738341386").send(`Welcome to the server <@${member.id}>. Be sure to checkout the rules ${member.guild.channels.cache.get(rulesChannel).toString()}`);
-})
+});
 
 var fs = require('fs');
 
@@ -48,13 +51,29 @@ async function cronJob(){
   setTimeout(cronJob, 60000 * interval);
 }
 
+async function roleValidator(client, authorId, acceptedRoles) {
+  let validation = false;
+  const strikersGuild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
+  await strikersGuild.members.fetch(authorId)
+  .then((user) => {
+    user._roles.forEach(userRole => {
+      if (acceptedRoles.includes(userRole)) {
+        validation = true;
+        return;
+        }
+      });
+  });
+  return validation
+}
+
 client.on("messageCreate", messageManager);
 
 async function messageManager(msg){
 	if (msg.author.bot) return
 
 	if(msg.channel.id){
-		var token = msg.content.split(" ");
+      var token = msg.content.split(" ");
+
 		if(token[0] == "!roboedit"){
 			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
 				if (err) throw err;
