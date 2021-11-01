@@ -22,6 +22,7 @@
     "commands:register": "node scripts/register_commands.js",
     "commands:get": "node scripts/get_commands.js",
     "commands:delete": "node scripts/delete_commands.js",
+    "permissions:get": "node scripts/get_permissions.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
