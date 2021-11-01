@@ -11,7 +11,7 @@ commandFiles.forEach(file => {
 const CONSTANTS = require('../constants')
 const token = process.env.BOT_TOKEN
 const rest = new REST({version:'9'}).setToken(token)
-rest.get(Routes.applicationGuildCommands(process.env.CLIENT_ID, CONSTANTS.GUILD_ID))
+rest.get(Routes.guildApplicationCommandsPermissions(process.env.CLIENT_ID, CONSTANTS.GUILD_ID))
         .then((data) => {console.log(data)})
         .catch((err) => console.log(err))
 
