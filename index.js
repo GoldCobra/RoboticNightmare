@@ -1,10 +1,12 @@
 require('dotenv').config()
 const axios= require('axios')
 
-const { Client, Intents, Permissions } = require('discord.js');
+const { Client, Intents, Collection} = require('discord.js');
+const {SlashCommandBuilder} = require('@discordjs/builders')
+
 
 const CONSTANTS = require('./constants');
-
+const {config} = require('./sql_config')
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
@@ -26,22 +28,31 @@ let rando = 0;
 
 const interval = 30;
 
-let config = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  server: 'yew.arvixe.com',
-  database: 'MarioStrikers',
-  options: {
-      encrypt: true,
-      trustServerCertificate: true,
-      port: 443,
-      cryptoCredentialsDetails: {
-            minVersion: 'TLSv1'
-        }
-  }
-}
+client.commands = new Collection()
+const commandFiles = fs.readdirSync('./commands')
+commandFiles.forEach(file => {
+        require(`./commands/${file}`).commands.forEach(command => client.commands.set(command.data.name,command))
+});
+
+
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+
+	const command = client.commands.get(interaction.commandName);
+
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
+});
+
 
 client.on("ready", cronJob);
+
 
 async function cronJob(){
   client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
@@ -68,11 +79,14 @@ async function roleValidator(client, authorId, acceptedRoles) {
 
 client.on("messageCreate", messageManager);
 
-async function messageManager(msg){
+
+
+async function messageManager(msg){  
 	if (msg.author.bot) return
 
-	if(msg.channel.id){
-      var token = msg.content.split(" ");
+  //if(msg.channel.id){
+	if(msg.channel.id == 902508091680108574 || msg.channel.id == 902508170126180352){
+    var token = msg.content.split(" ");
 
 		if(token[0] == "!roboedit"){
 			fs.readFile('msg_send.txt', 'utf8', function(err, data) {
@@ -189,7 +203,6 @@ async function messageManager(msg){
         msg.react('❌');
       }
 		}
-
 		else if(token[0] == "!smsrating"){
 			try {
         sql.connect(config, function(err) {
@@ -420,7 +433,9 @@ async function messageManager(msg){
         msg.react('❌');
       }
     }
-	}
+	} else {
+    console.log("Outside development environment")
+  }
 }
 
 //REACTION ROLES
