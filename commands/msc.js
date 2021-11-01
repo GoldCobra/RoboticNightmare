@@ -74,7 +74,8 @@ const commands = [
         .setDescription('Reporting MSC Matches')
         .addUserOption(option => option.setName('p1').setDescription('Player 1'))
         .addUserOption(option => option.setName('p2').setDescription('Player 2'))
-        .addIntegerOption(option => option.setName('score').setDescription('Score')),
+        .addIntegerOption(option => option.setName('score').setDescription('Score'))
+        .setDefaultPermission(false),
 
         async execute(interaction) {
             try {

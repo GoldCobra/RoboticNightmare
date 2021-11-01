@@ -17,7 +17,8 @@ const commands = [
         .setName('upsert')
         .setDescription('Insert/Update Upsert Stored Procedure')
         .addStringOption(option => option.setName('name').setDescription('Command Name'))
-        .addStringOption(option => option.setName('response').setDescription('Response to display with command')),
+        .addStringOption(option => option.setName('response').setDescription('Response to display with command'))
+        .setDefaultPermission(false),
 
         async execute(interaction) {
             try {
@@ -41,7 +42,8 @@ const commands = [
         data: new SlashCommandBuilder()
         .setName('remove-command')
         .setDescription('Remove command from database')
-        .addStringOption(option => option.setName('command').setDescription('Command To Be Removed')),
+        .addStringOption(option => option.setName('command').setDescription('Command To Be Removed'))
+        .setDefaultPermission(false),
 
         async execute(interaction) {
             try {
