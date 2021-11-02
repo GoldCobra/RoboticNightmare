@@ -1,6 +1,6 @@
 # Robotic Nightmare Bot for Mario Strikers
 
-Link to discord
+Link to discord2
 
 ## Running the bot
 
