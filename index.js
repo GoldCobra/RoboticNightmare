@@ -58,9 +58,8 @@ client.on("ready", cronJob);
 
 
 async function cronJob() {
-  // set status to Playing at X, where X is a random stadium from MSC/SMS
-  client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
-
+	// set status to Playing at X, where X is a random stadium from MSC/SMS
+	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
 
 	// repeat every X minutes, where X is interval's value
