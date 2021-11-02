@@ -1,6 +1,7 @@
 const {SlashCommandBuilder} = require('@discordjs/builders')
 const sql = require('mssql')
 const {config} = require('../sql_config');
+const axios = require('axios')
 const commands = [
     {
         data: new SlashCommandBuilder()
@@ -39,7 +40,6 @@ const commands = [
         async execute(interaction) {
             const url4 = "https://docs.google.com/spreadsheets/d/1elh4wTVHNR0dv-QNklaNLMUNU07VKuaFkZkU9G2XWQ0/gviz/tq?";
 			
-			if(msg.bot) return;
             interaction.reply("**MSL Season 1** — SMS Rankings");
 			axios.get(url4)
 			.then(function (response) {
@@ -48,7 +48,8 @@ const commands = [
 
 				data.table.rows.map((main)=>{
 					newData4.push(main.c[0].v);
-				})
+                })
+                console.log(interaction)
 				interaction.followUp(newData4.join('\n'));
 				// I need this data here ^^
 				return response.data;
@@ -64,19 +65,19 @@ const commands = [
         .setDescription('Reporting SMS Matches')
         .addUserOption(option => option.setName('p1').setDescription('Player 1'))
         .addUserOption(option => option.setName('p2').setDescription('Player 2'))
-        .addIntegerOption(option => option.setName('score').setDescription('Score'))
+        .addStringOption(option => option.setName('score').setDescription('Score'))
         .setDefaultPermission(false),
 
         async execute(interaction) {
             try {
-               const p1 = interaction.getUser('p1').username;
-               const p2 = interaction.getUser('p2').username;
+               const p1 = interaction.options.getUser('p1').username;
+               const p2 = interaction.options.getUser('p2').username;
                sql.connect(config, (err) => {
                     const request = new sql.Request();
                     const query = "exec reportScoreSMS @p1, @p2, @score;"
                     request.input("p1", p1);
                     request.input("p2", p2);
-                    request.input("score", score);
+                    request.input("score", interaction.options.getString('score'));
                     request.query(query, (err,recordset) => {
                        if (err) console.log(err)
                     })
