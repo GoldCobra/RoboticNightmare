@@ -1,5 +1,5 @@
 const {SlashCommandBuilder} = require('@discordjs/builders')
-const {sql} = require('mssql')
+const sql = require('mssql')
 const {config} = require('../sql_config');
 
 const commands = [
@@ -25,8 +25,8 @@ const commands = [
                 sql.connect(config, (err) => {
                     const request = new sql.Request();
                     const query = "exec UpsertCommand @token, @response"
-                    request.input('token', interaction.getString('name'));
-                    request.input('response', interaction.getString('response'));
+                    request.input('token', interaction.options.getString('name'));
+                    request.input('response', interaction.options.getString('response'));
                     request.query(query, (err, recordset) => {           
                         if (err) console.log(err) 
                     });
@@ -50,7 +50,7 @@ const commands = [
                 sql.connect(config, (err) => {
                     const request = new sql.Request()
                     const query = "delete from discordCommands where token = @token"
-                    request.input('token', `!${interaction.getString('command')}`)
+                    request.input('token', `!${interaction.options.getString('command')}`)
                     request.query(query, (err, recordset) => {
                         if (err) console.log(err)
                     });

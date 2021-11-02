@@ -58,8 +58,8 @@ const commands = [
 
 				data.table.rows.map((main)=>{
 					newData3.push(main.c[0].v);
-				})
-				interaction.followUp.send(newData3.join('\n'));
+                })
+				interaction.followUp(newData3.join('\n'));
 				// I need this data here ^^
 				return response.data;
 			})
@@ -74,19 +74,19 @@ const commands = [
         .setDescription('Reporting MSC Matches')
         .addUserOption(option => option.setName('p1').setDescription('Player 1'))
         .addUserOption(option => option.setName('p2').setDescription('Player 2'))
-        .addIntegerOption(option => option.setName('score').setDescription('Score'))
+        .addStringOption(option => option.setName('score').setDescription('Score'))
         .setDefaultPermission(false),
 
         async execute(interaction) {
             try {
-               const p1 = interaction.getUser('p1').username;
-               const p2 = interaction.getUser('p2').username;
+               const p1 = interaction.options.getUser('p1').username;
+               const p2 = interaction.options.getUser('p2').username;
                sql.connect(config, (err) => {
                     const request = new sql.Request();
                     const query = "exec reportScoreMSC @p1, @p2, @score;"
                     request.input("p1", p1);
                     request.input("p2", p2);
-                    request.input("score", score);
+                    request.input("score", interaction.options.getString('score'));
                     request.query(query, (err,recordset) => {
                        if (err) console.log(err)
                     })
