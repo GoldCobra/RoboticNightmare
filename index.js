@@ -414,7 +414,7 @@ async function messageManager(msg){
           request.query(query, function(err, recordset) {
             if (err) {
               console.log(err);
-              console.react('❌');
+              msg.react('❌');
             }
             else {
               let data = recordset.recordset;
