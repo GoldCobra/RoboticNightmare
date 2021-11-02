@@ -452,38 +452,6 @@ async function messageManager(msg){
 				msg.react('❌');
 			}
 		}
-    
-    else if (token[0].substring(0, 1) == "!") {
-      if(msg.bot) return;
-      try {
-        sql.connect(config, function(err) {
-          var request = new sql.Request();
-
-          let query = "select * from DiscordCommands where Token = @token";
-          request.input("token", token[0]);
-          
-          request.query(query, function(err, recordset) {
-            if (err) {
-              console.log(err);
-              msg.react('❌');
-            }
-            else {
-              let data = recordset.recordset;
-              if (recordset.recordset.length == 0) {
-                return;
-              }
-              else {
-                msg.channel.send(recordset.recordset[0].Response);
-              }
-            }
-          })
-        })
-      }
-      catch(error) {
-        console.log(error);
-        msg.react('❌');
-      }
-    }
 	} else {
     console.log("Outside development environment")
   }
