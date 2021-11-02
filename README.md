@@ -5,6 +5,7 @@ Link to discord
 ## Running the bot
 
 1. Create `.env` file in this format
+
 ```
 BOT_TOKEN=XXXX
 CLIENT_ID=XXXX
@@ -12,7 +13,7 @@ DB_PASS=XXXX
 DB_USER=XXXX
 ```
 
-2. Ensure commands are [registered](#register-commands) 
+2. Ensure commands are [registered](#register-commands)
 
 3. Run `npm run start`
 
@@ -34,10 +35,10 @@ Running with no arguement will delete all commands.
 
 Run `npm run commands:get`
 
-This will get all commands registered to the Bot. 
+This will get all commands registered to the Bot.
 
 ### Get Permissions
 
-Run `npm run peremissions:get`
+Run `npm run permissions:get`
 
-This will get all permissions for all commands registered to the Bot. 
+This will get all permissions for all commands registered to the Bot.
