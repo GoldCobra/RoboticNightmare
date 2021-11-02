@@ -1,10 +1,12 @@
 require('dotenv').config()
 const axios = require('axios')
 
-const { Client, Intents, Permissions } = require('discord.js');
+const { Client, Intents, Collection} = require('discord.js');
+const {SlashCommandBuilder} = require('@discordjs/builders')
+
 
 const CONSTANTS = require('./constants');
-
+const {config} = require('./sql_config')
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
@@ -29,27 +31,35 @@ let rando = 0;
 // time in minutes that cronJob will run
 const interval = 30;
 
-let config = {
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	server: 'yew.arvixe.com',
-	database: 'MarioStrikers',
-	options: {
-		encrypt: true,
-		trustServerCertificate: true,
-		port: 443,
-		cryptoCredentialsDetails: {
-			minVersion: 'TLSv1'
-		}
+client.commands = new Collection()
+const commandFiles = fs.readdirSync('./commands')
+commandFiles.forEach(file => {
+        require(`./commands/${file}`).commands.forEach(command => client.commands.set(command.data.name,command))
+});
+
+
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+
+	const command = client.commands.get(interaction.commandName);
+
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
-}
+});
+
 
 client.on("ready", cronJob);
+
 
 async function cronJob() {
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
-
 	rando = Math.floor(Math.random() * 17);
 
 	// repeat every X minutes, where X is interval's value
