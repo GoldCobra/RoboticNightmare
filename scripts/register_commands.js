@@ -32,9 +32,6 @@ rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, CONSTANTS.GUILD_
                                 }
                         });
                 });
-                commandPermissions.forEach(command => {
-                        console.log(command.permissions)
-                })
                 if (commandPermissions.length > 0){
                         rest.put(Routes.guildApplicationCommandsPermissions(process.env.CLIENT_ID, CONSTANTS.GUILD_ID), {body: commandPermissions})
                 }
