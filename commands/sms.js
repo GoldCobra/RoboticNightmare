@@ -49,7 +49,6 @@ const commands = [
 				data.table.rows.map((main)=>{
 					newData4.push(main.c[0].v);
                 })
-                console.log(interaction)
 				interaction.followUp(newData4.join('\n'));
 				// I need this data here ^^
 				return response.data;

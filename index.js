@@ -58,7 +58,7 @@ client.on("ready", cronJob);
 
 
 async function cronJob() {
-  	// set status to Playing at X, where X is a random stadium from MSC/SMS
+  // set status to Playing at X, where X is a random stadium from MSC/SMS
   client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 
 	rando = Math.floor(Math.random() * 17);
@@ -85,11 +85,10 @@ async function roleValidator(client, authorId, acceptedRoles) {
 
 client.on("messageCreate", messageManager);
 
-async function messageManager(msg){  
+async function messageManager(msg){
 	if (msg.author.bot) return
 
-  //if(msg.channel.id){
-	if(msg.channel.id == 902508091680108574 || msg.channel.id == 902508170126180352){
+  if(msg.channel.id) {
     var token = msg.content.split(" ");
 
 		if (token[0] == "!roboedit") {
@@ -452,9 +451,7 @@ async function messageManager(msg){
 				msg.react('❌');
 			}
 		}
-	} else {
-    console.log("Outside development environment")
-  }
+	}
 }
 
 //REACTION ROLES

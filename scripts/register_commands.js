@@ -37,4 +37,3 @@ rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, CONSTANTS.GUILD_
                 }
         })
         .catch((err) => console.log(err))
-
