@@ -85,11 +85,11 @@ async function roleValidator(client, authorId, acceptedRoles) {
 
 client.on("messageCreate", messageManager);
 
-async function messageManager(msg){
+async function messageManager(msg) {
 	if (msg.author.bot) return
 
-  if(msg.channel.id) {
-    var token = msg.content.split(" ");
+	if (msg.channel.id) {
+		var token = msg.content.split(" ");
 
 		if (token[0] == "!roboedit") {
 			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
