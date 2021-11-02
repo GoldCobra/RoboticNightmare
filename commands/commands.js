@@ -15,7 +15,7 @@ const commands = [
     {
         data: new SlashCommandBuilder()
         .setName('upsert')
-        .setDescription('Insert/Update Upsert Stored Procedure')
+        .setDescription('Add/Update Command')
         .addStringOption(option => option.setName('name').setDescription('Command Name'))
         .addStringOption(option => option.setName('response').setDescription('Response to display with command'))
         .setDefaultPermission(false),
