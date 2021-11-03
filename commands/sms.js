@@ -2,6 +2,7 @@ const {SlashCommandBuilder} = require('@discordjs/builders')
 const sql = require('mssql')
 const {config} = require('../sql_config');
 const axios = require('axios')
+const rules = ["Test Rule 1", "Test Rule 2", "Test Rule 3"]
 const commands = [
     {
         data: new SlashCommandBuilder()
@@ -86,6 +87,16 @@ const commands = [
                 console.log(error)
                 interaction.reply('❌')
             }
+        }
+    },
+    {
+        data: new SlashCommandBuilder()
+            .setName('randomrule')
+            .setDescription('Generate a random rule for SMS matches')
+            .setDefaultPermission(true),
+
+        async execute(interaction) {
+            interaction.reply(rules[Math.floor(Math.random() * rules.length)]);
         }
     }
 ]
