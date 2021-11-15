@@ -27,9 +27,10 @@ module.exports = {
     smsyoshi: "<:smsyoshi:862645273200689152>",
     smsmario: "<:smsmario:862644869717295115>",
     smsluigi: "<:smsluigi:862644885962358784>",
-    smstoad: "<:msctoad:673686283356471296>",
-    smshammerbro: "<:mschammerbro:673817221289476106>",
-    smskoopa: "<:msckoopa:673671175406223372>",
+    smstoad: "<:smstoad:909825100776341546>",
+    smshammerbro: "<:smshammerbro:909825129599598622>",
+    smskoopa: "<:smskoopa:909825168501792838>",
+    smsbirdo: "<smsbirdo:909825180531048501>",
     megastrike: "<a:megastrike:862605239025664000>"
 
 

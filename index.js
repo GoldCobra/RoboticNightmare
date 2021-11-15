@@ -91,7 +91,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 
-	if (msg.channel.id == '902508091680108574') {
+	if (msg.channel.id) {
 		var token = msg.content.split(" ");
 
 		if (token[0] == "!roboedit") {
