@@ -258,7 +258,7 @@ async function messageManager(msg) {
 			seriesAmount = seriesAmount%2!=0 ? seriesAmount += 1 : seriesAmount;
 			seriesAmount += minSeries;
 
-			minGoals = 1;
+			minGoals = 3;
 			maxGoals = 10;
 			goalAmount = Math.floor(Math.random()* (maxSeries - minSeries)) + minSeries;
 
