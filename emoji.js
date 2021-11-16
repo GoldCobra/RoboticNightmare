@@ -1,0 +1,38 @@
+module.exports = {
+    mscboo: "<:mscboo:673680480331366420>",
+    mscbirdo: "<:mscbirdo:673805238536372227>",
+    msckoopa: "<:msckoopa:673671175406223372>",
+    mscdrybones: "<:mscdrybones:673802050605416448>",
+    mschammerbro: "<:mschammerbro:673817221289476106>",
+    mscmonty: "<:mscmonty:673809104543809556>",
+    msctoad: "<:msctoad:673686283356471296>",
+    mscshyguy: "<:mscshyguy:673670381911146498>",
+    mscwaluigi: "<:mscwaluigi:672091883127832586>",
+    mscdk: "<:mscdk:672091861388623902>",
+    mscpetey: "<:mscpetey:672092080293675019>",
+    mscdaisy: "<:mscdaisy:672092026568704000>",
+    mscwario: "<:mscwario:672091915352539156>",
+    mscbowser: "<:mscbowser:672091933119873025>",
+    mscmario: "<:mscmario:672091823774367754>",
+    mscluigi: "<:mscluigi:672091897149259778>",
+    mscpeach: "<:mscpeach:672091844041244723>",
+    mscyoshi: "<:mscyoshi:672091973611421706>",
+    mscdiddy: "<:mscdiddy:672092066041298963>",
+    mscbowserjr: "<:mscbowserjr:672092050371510282>",
+    smswaluigi: "<:smswaluigi:862645008434987049>",
+    smswario: "<:smswario:862644995223846912>",
+    smsdk: "<:smsdk:862645254401032212>",
+    smsdaisy: "<:smsdaisy:862644977284022282>",
+    smspeach: "<:smspeach:862644927342575637>",
+    smsyoshi: "<:smsyoshi:862645273200689152>",
+    smsmario: "<:smsmario:862644869717295115>",
+    smsluigi: "<:smsluigi:862644885962358784>",
+    smstoad: "<:smstoad:909825100776341546>",
+    smshammerbro: "<:smshammerbro:909825129599598622>",
+    smskoopa: "<:smskoopa:909825168501792838>",
+    smsbirdo: "<smsbirdo:909825180531048501>",
+    megastrike: "<a:megastrike:862605239025664000>"
+
+
+
+}
