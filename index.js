@@ -156,13 +156,6 @@ async function messageManager(msg) {
 			msg.delete();
 		}
 
-		else if (token[0] == "!smsiso") {
-			if (msg.bot)
-				return;
-
-			//msg.author.send("Will get you the link t")
-		}
-
 		// function allows for the creation of new one-off commands - good for showing bracket images or answering frequently asked questions
 		else if (token[0] == "!upsertcommand") {
 			try {
@@ -222,7 +215,7 @@ async function messageManager(msg) {
 			p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)]
 			p2LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)]
 
-			mscCaptains = CONSTANTS.MSC_CAPTAINS.
+			mscCaptains = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)]
 			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)]
 			remainingCaptains = CONSTANTS.MSC_CAPTAINS.filter(captain => captain !== p1Captain)
 			p2Captain = remainingCaptains[Math.floor(Math.random()*remainingCaptains.length)]
@@ -346,6 +339,16 @@ async function messageManager(msg) {
 
 
 			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS.mscboo}${EMOJIS.mscdrybones}${EMOJIS[p1SK3]}`)
+		}
+
+		// function displays the tier list for MSC
+		else if (token[0] == "!flip") {
+			if (msg.bot) return;
+
+      if (Math.random >= .5)
+        msg.reply("heads!");
+      else
+			  msg.reply("tails!");
 		}
 
 		// function displays the tier list for MSC
