@@ -65,6 +65,13 @@ async function cronJob() {
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
 
+
+  // give pied his role back
+  /*
+  const pied = client.guild.members.cache.get('151554896339009536');
+  const legend = '862992675384197120';
+  pied.roles.add(legend);
+  */
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
@@ -99,7 +106,7 @@ async function messageManager(msg) {
 
 				msg.channel.messages.fetch(
 					//in around put the ID of the message which you want to edit//
-					{ around: "895755842169761833", limit: 1 })
+					{ around: "896366421771182112", limit: 1 })
 					.then(msg => {
 						const fetchedMsg = msg.first();
 						fetchedMsg.edit(data);
@@ -110,7 +117,7 @@ async function messageManager(msg) {
 		else if (token[0] == "!robosend") {
 			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
 				if (err) throw err;
-				client.channels.cache.get('892043307738341386').send(data);
+				client.channels.cache.get('902508170126180352').send(data);
 			});
 		}
 
@@ -119,6 +126,40 @@ async function messageManager(msg) {
 				if (err) throw err;
 				client.channels.cache.get('897757084299431936').send(data);
 			});
+		}
+
+		else if (token[0] == "!msciso") {
+			if (msg.bot)
+				return;
+
+			msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL iso. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc");
+
+			msg.delete();
+		}
+
+		else if (token[0] == "!smsiso") {
+			if (msg.bot)
+				return;
+
+			msg.author.send("Below is a link to Super Mario Strikers NTSC iso. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0");
+
+			msg.delete();
+		}
+
+		else if (token[0] == "!rechargediso") {
+			if (msg.bot)
+				return;
+
+			msg.author.send("Below is a link to Mario Strikers Recharged, which has improved Strikers ABC scenarios and allows for fast tournement play on most fields.\n\nhttps://drive.google.com/file/d/1ip-V4xFpf9-BJEMOaZw1hZw1nPVXXU88");
+
+			msg.delete();
+		}
+
+		else if (token[0] == "!smsiso") {
+			if (msg.bot)
+				return;
+
+			//msg.author.send("Will get you the link t")
 		}
 
 		// function allows for the creation of new one-off commands - good for showing bracket images or answering frequently asked questions
