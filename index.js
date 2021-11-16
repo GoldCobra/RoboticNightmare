@@ -67,12 +67,12 @@ async function cronJob() {
 	rando = Math.floor(Math.random() * 17);
 
 
-  // give pied his role back
-  /*
-  const pied = client.guild.members.cache.get('151554896339009536');
-  const legend = '862992675384197120';
-  pied.roles.add(legend);
-  */
+	// give pied his role back
+	/*
+	const pied = client.guild.members.cache.get('151554896339009536');
+	const legend = '862992675384197120';
+	pied.roles.add(legend);
+	*/
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
@@ -210,145 +210,147 @@ async function messageManager(msg) {
 				msg.react('❌');
 			}
 		}
-		
+
 		else if (token[0] == "!mscallcomp") {
-			p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)]
-			p2LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)]
+			p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
+			p2LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
 
-			mscCaptains = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)]
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)]
+			mscCaptains = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)]
+			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)]
 			remainingCaptains = CONSTANTS.MSC_CAPTAINS.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random()*remainingCaptains.length)]
+			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
 
-			randStadium = CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random()*CONSTANTS.MSC_COMP_STADIUMS.length)]
+			randStadium = CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS.mscboo}${EMOJIS.mscboo}${EMOJIS[p1LastSK]} **VS** ${EMOJIS[p2Captain]}${EMOJIS.mscboo}${EMOJIS.mscboo}${EMOJIS[p2LastSK]}\n:stadium: **${randStadium}**\n:1234: Best of 3\n:goal: **First to 10**`);
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p2LastSK]}\n:stadium: **${randStadium}**\n:1234: **Best of 3**\n:goal: **First to 10**`);
 		}
 
 		else if (token[0] == "!smsallcomp") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random()*CONSTANTS.SMS_CAPTAIN.length)]
+			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 			remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random()*remainingCaptains.length)]
+			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
 
 			randStadium = CONSTANTS.SMS_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_COMP_STADIUMS.length)]
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS.smstoad} **VS** ${EMOJIS[p2Captain]}${EMOJIS.smstoad}\n:stadium: **${randStadium}**\n:1234: **Best of 5**\n:alarm_clock: **5 Minutes**\n${EMOJIS.megastrike} **Super Strikes Off**`);
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.smstoad}\n:stadium: **${randStadium}**\n:1234: **Best of 5**\n:alarm_clock: **5 Minutes**\n${EMOJIS.megastrike} **Super Strikes Off**`);
 		}
 
 		else if (token[0] == "!smsallrandom") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random()*CONSTANTS.SMS_CAPTAIN.length)]
+			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 			remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random()*remainingCaptains.length)]
+			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
 
 			p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
 			p2SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
 
 			maxSeries = 9;
 			minSeries = 1;
-			seriesAmount = Math.floor(Math.random()*(maxSeries - minSeries));
-			seriesAmount = seriesAmount%2!=0 ? seriesAmount += 1 : seriesAmount;
+			seriesAmount = Math.floor(Math.random() * (maxSeries - minSeries));
+			seriesAmount = seriesAmount % 2 != 0 ? seriesAmount += 1 : seriesAmount;
 			seriesAmount += minSeries;
 
 
 			randStadium = CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]
 
-			times = [2,3,4,5]
+			times = [2, 3, 4, 5]
 			randTime = times[Math.floor(Math.random() * times.length)]
 
 			superStrikes = Math.floor(Math.random() + .5) ? "On" : "Off"
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS[p1SK]} **VS** ${EMOJIS[p2Captain]}${EMOJIS[p2SK]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:alarm_clock: **${randTime} Minutes**\n${EMOJIS.megastrike} **Super Strikes ${superStrikes}**`)
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:alarm_clock: **${randTime} Minutes**\n${EMOJIS.megastrike} **Super Strikes ${superStrikes}**`)
 		}
 
-		else if (token[0] == "!smsct" || token[0]  == "!smscompteam") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random()*CONSTANTS.SMS_CAPTAIN.length)]
+		else if (token[0] == "!smsct" || token[0] == "!smscompteam") {
+			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS.smstoad}`);
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}`);
 		}
 
 		else if (token[0] == "!smsrt" || token[0] == "!smsrandomteam") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random()*CONSTANTS.SMS_CAPTAIN.length)]
+			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 			p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS[p1SK]}`);
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}`);
 
 		}
 
 		else if (token[0] == "!mscallrandom") {
 
-			p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
-			p2SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
-			p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
-			p2SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
-			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
-			p2SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
+			p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+			p2SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+			p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+			p2SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+			p2SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
 
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)];
+			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
 			remainingCaptains = CONSTANTS.MSC_CAPTAINS.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random()*remainingCaptains.length)]
+			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
 
-			randStadium = CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random()*CONSTANTS.MSC_ALL_STADIUMS.length)]
-			
+			randStadium = CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]
+
 			maxSeries = 9;
 			minSeries = 1;
-			seriesAmount = Math.floor(Math.random()*(maxSeries - minSeries));
-			seriesAmount = seriesAmount%2!=0 ? seriesAmount += 1 : seriesAmount;
+			seriesAmount = Math.floor(Math.random() * (maxSeries - minSeries));
+			seriesAmount = seriesAmount % 2 != 0 ? seriesAmount += 1 : seriesAmount;
 			seriesAmount += minSeries;
 
 			minGoals = 3;
 			maxGoals = 10;
-			goalAmount = Math.floor(Math.random()* (maxSeries - minSeries)) + minSeries;
+			goalAmount = Math.floor(Math.random() * (maxSeries - minSeries)) + minSeries;
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS[p1SK1]}${EMOJIS[p1SK2]}${EMOJIS[p1SK3]} **VS** ${EMOJIS[p2Captain]}${EMOJIS[p2SK1]}${EMOJIS[p2SK2]}${EMOJIS[p2SK3]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:goal: **First to ${goalAmount}**`);
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK1]} ${EMOJIS[p2SK2]} ${EMOJIS[p2SK3]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:goal: **First to ${goalAmount}**`);
 		}
 
 		else if (token[0] == "!mscclassic" || token[0] == "!smsrs" || token[0] == "!smsrandomstage") {
-			msg.channel.send(`**${CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random()*CONSTANTS.SMS_ALL_STADIUMS.length)]}**`);
+			msg.channel.send(`>>> **${CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]}**`);
 		}
 
 		else if (token[0] == "!msccs" || token[0] == "!msccompstage") {
-			msg.channel.send(`**${CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random()*CONSTANTS.MSC_COMP_STADIUMS.length)]}**`)
+			msg.channel.send(`>>> **${CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]}**`)
 		}
 
 		else if (token[0] == "!mscrs" || token[0] == "!mscrandomstage") {
-			msg.channel.send(`**${CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random()*CONSTANTS.MSC_ALL_STADIUMS.length)]}**`)
+			msg.channel.send(`>>> **${CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]}**`)
 		}
 
 		else if (token[0] == "!mscct" || token[0] == "!msccompteam") {
-			p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)]
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)];
+			p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
+			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS.mscboo}${EMOJIS.mscboo}${EMOJIS[p1LastSK]}`);
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}`);
 
 		}
 
 		else if (token[0] == "!mscrt" || token[0] == "!mscrandomteam") {
 
-			p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
-			p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
-			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
+			p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+			p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
 
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)];
+			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS[p1SK1]}${EMOJIS[p1SK2]}${EMOJIS[p1SK3]}`);			
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}`);
 		}
 
 		else if (token[0] == "!mscdbt" || token[0] == "!mscdrybonesteam") {
 
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random()*CONSTANTS.MSC_CAPTAINS.length)];
-			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random()*CONSTANTS.MSC_SK.length)];
+			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
+			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
 
 
-			msg.channel.send(`${EMOJIS[p1Captain]}${EMOJIS.mscboo}${EMOJIS.mscdrybones}${EMOJIS[p1SK3]}`)
+			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscdrybones} ${EMOJIS[p1SK3]}`)
 		}
 
 		// function displays the tier list for MSC
 		else if (token[0] == "!flip") {
 			if (msg.bot) return;
 
-      if (Math.random >= .5)
-        msg.reply("heads!");
-      else
-			  msg.reply("tails!");
+			let x = Math.random();
+
+			if (x >= .5)
+				msg.reply("heads!");
+			else
+				msg.reply("tails!");
 		}
 
 		// function displays the tier list for MSC
