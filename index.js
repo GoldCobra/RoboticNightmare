@@ -123,7 +123,11 @@ async function messageManager(msg) {
 		}
 
 		else if (token[0] == "!sandbox") {
-			fs.readFile('msg_sandbox.txt', 'utf8', function (err, data) {
+			fs.readFile('sandbox_msc.txt', 'utf8', function (err, data) {
+				if (err) throw err;
+				client.channels.cache.get('897757084299431936').send(data);
+			});
+			fs.readFile('sandbox_sms.txt', 'utf8', function (err, data) {
 				if (err) throw err;
 				client.channels.cache.get('897757084299431936').send(data);
 			});
@@ -133,7 +137,7 @@ async function messageManager(msg) {
 			if (msg.bot)
 				return;
 
-			msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL iso. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc");
+			msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc");
 
 			msg.delete();
 		}
@@ -142,7 +146,7 @@ async function messageManager(msg) {
 			if (msg.bot)
 				return;
 
-			msg.author.send("Below is a link to Super Mario Strikers NTSC iso. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0");
+			msg.author.send("Below is a link to Super Mario Strikers NTSC ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0");
 
 			msg.delete();
 		}
