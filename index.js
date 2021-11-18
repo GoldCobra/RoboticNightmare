@@ -11,7 +11,7 @@ const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
 const { config } = require('./sql_config');
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -20,10 +20,9 @@ const stadiums = ['The Classroom', 'The Sand Tomb', 'The Palace', 'Thunder Islan
 	'Crater Field', 'The Dump', 'The Vice', 'Crystal Canyon', 'The Battle Dome', 'The Lava Pit', 'Galactic Stadium', 'Bowser Stadium', 'Stormship Stadium'];
 const rules = ['Items Off', 'Bowser Attack On', 'Everything On', 'Normal Competitive Rules', 'First to 10 in Strikers 101', 'Infinite Items', 'Giant Items', 'No Toads', 'Create Your Own Rules', 'Superstrikes On'];
 
-// i believe this doesn't work/it's not currently enabled
 client.on('guildMemberAdd', (member) => {
-	const rulesChannel = "894852972117372988";
-	member.guild.channels.cache.get("892043307738341386").send(`Welcome to the server <@${member.id}>. Be sure to checkout the rules ${member.guild.channels.cache.get(rulesChannel).toString()}`);
+	member.createDM()
+	.then(DM => DM.send(`Welcome to the server <@${member.id}>. Be sure to checkout the rules <#${CONSTANTS.CHANNELS.RULE_CHANNEL}> and visit <#${CONSTANTS.CHANNELS.SERVER_ROLES_CHANNEL}> to gain access to more channels.`));
 });
 
 var fs = require('fs');
