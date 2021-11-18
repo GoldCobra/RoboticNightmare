@@ -97,7 +97,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 
-	if (msg.channel.id == process.env.TEST_CHANNEL_2) {
+	if (msg.channel.id) {
 			var token = msg.content.split(" ");
 
 			if (token[0] == "!roboedit") {
@@ -119,7 +119,7 @@ async function messageManager(msg) {
 					if (err) throw err;
 					client.channels.cache.get('902508170126180352').send(data)
 					.catch((err) => {
-						errorHandler('!robosend', err, msg)
+						errorHandler(err, msg)
 						
 					});
 				});
@@ -130,7 +130,7 @@ async function messageManager(msg) {
 					if (err) throw err;
 					client.channels.cache.get('897757084299431936').send(data)
 					.catch((err) => {
-						errorHandler('!sandbox', err, msg)
+						errorHandler(err, msg)
 						
 					});
 				});
@@ -138,7 +138,7 @@ async function messageManager(msg) {
 					if (err) throw err;
 					client.channels.cache.get('897757084299431936').send(data)
 					.catch((err) => {
-						errorHandler('!sandbox', err, msg)
+						errorHandler(err, msg)
 						
 					});
 				});
@@ -150,7 +150,7 @@ async function messageManager(msg) {
 
 				msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc")
 				.catch((err) => {
-					errorHandler('!msciso', err, msg)
+					errorHandler(err, msg)
 					
 				});
 
@@ -163,7 +163,7 @@ async function messageManager(msg) {
 
 				msg.author.send("Below is a link to Super Mario Strikers NTSC ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0")
 				.catch((err) => {
-					errorHandler('!smsiso', err, msg)
+					errorHandler(err, msg)
 					
 				});
 
@@ -176,7 +176,7 @@ async function messageManager(msg) {
 
 				msg.author.send("Below is a link to Mario Strikers Recharged, which has improved Strikers ABC scenarios and allows for fast tournement play on most fields.\n\nhttps://drive.google.com/file/d/1ip-V4xFpf9-BJEMOaZw1hZw1nPVXXU88")
 				.catch((err) => {
-					errorHandler('!rechargediso', err, msg)
+					errorHandler(err, msg)
 					
 				});
 
@@ -251,7 +251,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p2LastSK]}\n:stadium: **${randStadium}**\n:1234: **Best of 3**\n:goal: **First to 10**`)
 				.catch((err) => {
-					errorHandler('!mscallcomp', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -265,7 +265,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.smstoad}\n:stadium: **${randStadium}**\n:1234: **Best of 5**\n:alarm_clock: **5 Minutes**\n${EMOJIS.megastrike} **Super Strikes Off**`)
 				.catch((err) => {
-					errorHandler('!smsallcomp', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -294,7 +294,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:alarm_clock: **${randTime} Minutes**\n${EMOJIS.megastrike} **Super Strikes ${superStrikes}**`)
 				.catch((err) => {
-					errorHandler('!smsallrandom', err, msg)
+					errorHandler(err, msg)
 					
 				})
 			}
@@ -304,7 +304,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}`)
 				.catch((err) => {
-					errorHandler('!smsct OR !smscompteam', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -314,7 +314,7 @@ async function messageManager(msg) {
 				p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 
@@ -347,7 +347,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK1]} ${EMOJIS[p2SK2]} ${EMOJIS[p2SK3]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:goal: **First to ${goalAmount}**`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -355,7 +355,7 @@ async function messageManager(msg) {
 			else if (token[0] == "!mscclassic" || token[0] == "!smsrs" || token[0] == "!smsrandomstage") {
 				msg.channel.send(`>>> **${CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]}**`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -363,7 +363,7 @@ async function messageManager(msg) {
 			else if (token[0] == "!msccs" || token[0] == "!msccompstage") {
 				msg.channel.send(`>>> **${CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]}**`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -371,7 +371,7 @@ async function messageManager(msg) {
 			else if (token[0] == "!mscrs" || token[0] == "!mscrandomstage") {
 				msg.channel.send(`>>> **${CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]}**`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -382,7 +382,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 
@@ -398,7 +398,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -411,7 +411,7 @@ async function messageManager(msg) {
 
 				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscdrybones} ${EMOJIS[p1SK3]}`)
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -434,12 +434,12 @@ async function messageManager(msg) {
 
 				msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189371847381022/unknown.png")
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 				msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189471533400074/unknown.png")
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});
 			}
@@ -464,7 +464,7 @@ async function messageManager(msg) {
 								for (let i = 0; i < recordset.recordset.length; i++) {
 									newData.push(recordset.recordset[i].line)
 									.catch((err) => {
-										errorHandler('!error', err, msg)
+										errorHandler(err, msg)
 										
 									});
 									console.log(recordset.recordset[i].line);
@@ -505,7 +505,7 @@ async function messageManager(msg) {
 
 								msg.channel.send(newData.join('\n'))
 								.catch((err) => {
-									errorHandler('!error', err, msg)
+									errorHandler(err, msg)
 									
 								});
 							}
@@ -525,7 +525,7 @@ async function messageManager(msg) {
 				if (msg.bot) return;
 				msg.channel.send("**MSL Season 1** — MSC Rankings")
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});;
 				axios.get(url3)
@@ -538,7 +538,7 @@ async function messageManager(msg) {
 						})
 						msg.channel.send(newData3.join('\n'))
 						.catch((err) => {
-							errorHandler('!error', err, msg)
+							errorHandler(err, msg)
 							
 						});
 						// I need this data here ^^
@@ -556,7 +556,7 @@ async function messageManager(msg) {
 				if (msg.bot) return;
 				msg.channel.send("**MSL Season 1** — SMS Rankings")
 				.catch((err) => {
-					errorHandler('!error', err, msg)
+					errorHandler(err, msg)
 					
 				});;
 				axios.get(url4)
@@ -569,7 +569,7 @@ async function messageManager(msg) {
 						})
 						msg.channel.send(newData4.join('\n'))
 						.catch((err) => {
-							errorHandler('!error', err, msg)
+							errorHandler(err, msg)
 							
 						});
 						// I need this data here ^^
@@ -716,18 +716,6 @@ async function messageManager(msg) {
 				msg.channel.send(rules[Math.floor(Math.random() * rules.length)]);
 			}
 
-			else if (token[0] == "!error") {
-				try {
-				msg.channel.send()
-				.catch((err) => {
-					errorHandler('!error', err, msg)
-					
-				});
-				} catch (error) {
-					console.log(error)
-				}
-			}
-
 			// display a one-off command as created by !upsertcommand
 			else if (token[0].substring(0, 1) == "!") {
 				if (msg.bot) return;
@@ -751,7 +739,7 @@ async function messageManager(msg) {
 								else {
 									msg.channel.send(recordset.recordset[0].Response)
 									.catch((err) => {
-										errorHandler('!error', err, msg)
+										errorHandler(err, msg)
 										
 									});
 								}
@@ -767,11 +755,11 @@ async function messageManager(msg) {
 	}
 }
 
-const errorHandler = (command, err, msg) => {
+const errorHandler = (err, msg) => {
 	msg.channel.send(`>>> Sorry, we got lost completing your request ${EMOJIS.mscwariodizzy}\n\nSupport for this bot can be reached through pinging *@Developer*`);
 	client.channels.fetch(err.path.split('/')[2]).then(channel => {
 		client.channels.cache.get(CONSTANTS.DEBUG_CHANNEL)
-		.send(`Message: ${err.message}\nCommand: ${command}\nDate: ${new Date().toISOString()}\nChannel: ${channel.name}\n\nStack Trace: ${err.stack}`)
+		.send(`Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\nChannel: ${channel.name}\n\nStack Trace: ${err.stack}`)
 		.catch((err) => {
 			console.log(err)
 		});
