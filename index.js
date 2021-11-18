@@ -759,7 +759,7 @@ const errorHandler = (err, msg) => {
 	msg.channel.send(`>>> Sorry, we got lost completing your request ${EMOJIS.mscwariodizzy}\n\nSupport for this bot can be reached through pinging *@Developer*`);
 	client.channels.fetch(err.path.split('/')[2]).then(channel => {
 		client.channels.cache.get(CONSTANTS.DEBUG_CHANNEL)
-		.send(`Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\nChannel: ${channel.name}\n\nStack Trace: ${err.stack}`)
+		.send(`Error Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\nChannel: ${channel.name}\n\nStack Trace: ${err.stack}`)
 		.catch((err) => {
 			console.log(err)
 		});
