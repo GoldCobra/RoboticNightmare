@@ -734,7 +734,10 @@ async function messageManager(msg) {
 							else {
 								let data = recordset.recordset;
 								if (recordset.recordset.length == 0) {
-									return;
+									msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
+									.catch((err) => {
+										errorHandler(err,msg);
+									});
 								}
 								else {
 									msg.channel.send(recordset.recordset[0].Response)
