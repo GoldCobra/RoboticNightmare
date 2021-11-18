@@ -60,7 +60,6 @@ client.on('interactionCreate', async interaction => {
 
 client.on("ready", cronJob);
 
-
 async function cronJob() {
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
@@ -99,553 +98,675 @@ async function messageManager(msg) {
 	if (msg.author.bot) return
 
 	if (msg.channel.id) {
-		var token = msg.content.split(" ");
-
-		if (token[0] == "!roboedit") {
-			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
-				if (err) throw err;
-
-				msg.channel.messages.fetch(
-					//in around put the ID of the message which you want to edit//
-					{ around: "896366421771182112", limit: 1 })
-					.then(msg => {
-						const fetchedMsg = msg.first();
-						fetchedMsg.edit(data);
-					});
-			});
-		}
-
-		else if (token[0] == "!robosend") {
-			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
-				if (err) throw err;
-				client.channels.cache.get('902508170126180352').send(data);
-			});
-		}
-
-		else if (token[0] == "!sandbox") {
-			fs.readFile('sandbox_msc.txt', 'utf8', function (err, data) {
-				if (err) throw err;
-				client.channels.cache.get('897757084299431936').send(data);
-			});
-			fs.readFile('sandbox_sms.txt', 'utf8', function (err, data) {
-				if (err) throw err;
-				client.channels.cache.get('897757084299431936').send(data);
-			});
-		}
-
-		else if (token[0] == "!msciso") {
-			if (msg.bot)
-				return;
-
-			msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc");
-
-			msg.delete();
-		}
-
-		else if (token[0] == "!smsiso") {
-			if (msg.bot)
-				return;
-
-			msg.author.send("Below is a link to Super Mario Strikers NTSC ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0");
-
-			msg.delete();
-		}
-
-		else if (token[0] == "!rechargediso") {
-			if (msg.bot)
-				return;
-
-			msg.author.send("Below is a link to Mario Strikers Recharged, which has improved Strikers ABC scenarios and allows for fast tournement play on most fields.\n\nhttps://drive.google.com/file/d/1ip-V4xFpf9-BJEMOaZw1hZw1nPVXXU88");
-
-			msg.delete();
-		}
-
-		// function allows for the creation of new one-off commands - good for showing bracket images or answering frequently asked questions
-		else if (token[0] == "!upsertcommand") {
-			try {
-				sql.connect(config, function (err) {
-					var request = new sql.Request();
-
-					let param = "";
-
-					for (let i = 2; i < token.length; i++) {
-						param += token[i] + " ";
-					}
-
-					let query = "exec UpsertCommand @token, @response";
-
-					request.input('token', token[1]);
-					request.input('response', param);
-
-					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
-					});
-				})
-
-				msg.react('☑️');
-			}
-
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
-			}
-		}
-
-		// function removes one-off commands
-		else if (token[0] == "!removecommand") {
-			try {
-				sql.connect(config, function (err) {
-					var request = new sql.Request();
-
-					let query = "delete from discordCommands where token = @token";
-
-					request.input("token", "!" + token[1]);
-
-					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
-					});
-				})
-
-				msg.react('☑️');
-			}
-
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
-			}
-		}
-
-		else if (token[0] == "!mscallcomp") {
-			p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
-			p2LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
-
-			mscCaptains = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)]
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)]
-			remainingCaptains = CONSTANTS.MSC_CAPTAINS.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
-
-			randStadium = CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p2LastSK]}\n:stadium: **${randStadium}**\n:1234: **Best of 3**\n:goal: **First to 10**`);
-		}
-
-		else if (token[0] == "!smsallcomp") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
-			remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
-
-			randStadium = CONSTANTS.SMS_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_COMP_STADIUMS.length)]
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.smstoad}\n:stadium: **${randStadium}**\n:1234: **Best of 5**\n:alarm_clock: **5 Minutes**\n${EMOJIS.megastrike} **Super Strikes Off**`);
-		}
-
-		else if (token[0] == "!smsallrandom") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
-			remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
-
-			p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
-			p2SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
-
-			maxSeries = 9;
-			minSeries = 1;
-			seriesAmount = Math.floor(Math.random() * (maxSeries - minSeries));
-			seriesAmount = seriesAmount % 2 != 0 ? seriesAmount += 1 : seriesAmount;
-			seriesAmount += minSeries;
-
-
-			randStadium = CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]
-
-			times = [2, 3, 4, 5]
-			randTime = times[Math.floor(Math.random() * times.length)]
-
-			superStrikes = Math.floor(Math.random() + .5) ? "On" : "Off"
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:alarm_clock: **${randTime} Minutes**\n${EMOJIS.megastrike} **Super Strikes ${superStrikes}**`)
-		}
-
-		else if (token[0] == "!smsct" || token[0] == "!smscompteam") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}`);
-		}
-
-		else if (token[0] == "!smsrt" || token[0] == "!smsrandomteam") {
-			p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
-			p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}`);
-
-		}
-
-		else if (token[0] == "!mscallrandom") {
-
-			p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-			p2SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-			p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-			p2SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-			p2SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
-			remainingCaptains = CONSTANTS.MSC_CAPTAINS.filter(captain => captain !== p1Captain)
-			p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
-
-			randStadium = CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]
-
-			maxSeries = 9;
-			minSeries = 1;
-			seriesAmount = Math.floor(Math.random() * (maxSeries - minSeries));
-			seriesAmount = seriesAmount % 2 != 0 ? seriesAmount += 1 : seriesAmount;
-			seriesAmount += minSeries;
-
-			minGoals = 3;
-			maxGoals = 10;
-			goalAmount = Math.floor(Math.random() * (maxSeries - minSeries)) + minSeries;
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK1]} ${EMOJIS[p2SK2]} ${EMOJIS[p2SK3]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:goal: **First to ${goalAmount}**`);
-		}
-
-		else if (token[0] == "!mscclassic" || token[0] == "!smsrs" || token[0] == "!smsrandomstage") {
-			msg.channel.send(`>>> **${CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]}**`);
-		}
-
-		else if (token[0] == "!msccs" || token[0] == "!msccompstage") {
-			msg.channel.send(`>>> **${CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]}**`)
-		}
-
-		else if (token[0] == "!mscrs" || token[0] == "!mscrandomstage") {
-			msg.channel.send(`>>> **${CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]}**`)
-		}
-
-		else if (token[0] == "!mscct" || token[0] == "!msccompteam") {
-			p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}`);
-
-		}
-
-		else if (token[0] == "!mscrt" || token[0] == "!mscrandomteam") {
-
-			p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-			p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}`);
-		}
-
-		else if (token[0] == "!mscdbt" || token[0] == "!mscdrybonesteam") {
-
-			p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
-			p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
-
-
-			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscdrybones} ${EMOJIS[p1SK3]}`)
-		}
-
-		// function displays the tier list for MSC
-		else if (token[0] == "!flip") {
-			if (msg.bot) return;
-
-			let x = Math.random();
-
-			if (x >= .5)
-				msg.reply("heads!");
-			else
-				msg.reply("tails!");
-		}
-
-		// function displays the tier list for MSC
-		else if (token[0] == "!msctl") {
-			if (msg.bot) return;
-
-			msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189371847381022/unknown.png");
-			msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189471533400074/unknown.png");
-		}
-
-		// function shows the ratings of all active players for MSC
-		else if (token[0] == "!mscrating") {
-			try {
-				sql.connect(config, function (err) {
-					var request = new sql.Request();
-
-					let query = "exec GetRatingsForDiscord @gametype";
-					request.input('gametype', msc);
-
-					request.query(query, function (err, recordset) {
-						if (err) {
-							console.log(err);
-							msg.react('❌');
-						}
-						else {
-							let data = recordset.recordset;
-							const newData = [];
-							for (let i = 0; i < recordset.recordset.length; i++) {
-								newData.push(recordset.recordset[i].line);
-								console.log(recordset.recordset[i].line);
-							}
-
-							msg.channel.send(newData.join('\n'));
-						}
-					})
-				})
-			}
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
-			}
-		}
-
-		// function shows the ratings of all active players for SMS
-		else if (token[0] == "!smsrating") {
-			try {
-				sql.connect(config, function (err) {
-					var request = new sql.Request();
-
-					let query = "exec GetRatingsForDiscord @gametype";
-					request.input('gametype', sms);
-
-					request.query(query, function (err, recordset) {
-						if (err) {
-							console.log(err);
-							msg.react('❌');
-						}
-						else {
-							let data = recordset.recordset;
-							const newData = [];
-							for (let i = 0; i < recordset.recordset.length; i++) {
-								newData.push(recordset.recordset[i].line);
-								console.log(recordset.recordset[i].line);
-							}
-
-							msg.channel.send(newData.join('\n'));
-						}
-					})
-				})
-			}
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
-			}
-		}
-
-		// function shows the current MSL Rankings for MSC
-		else if (token[0] == "!mslmsc") {
-			const url3 = "https://docs.google.com/spreadsheets/d/1Cf5YggxcwNVMCTyQ1Xz7wC7OaOxVoC1rQIeEJSXo6s8/gviz/tq?";
-
-			if (msg.bot) return;
-			msg.channel.send("**MSL Season 1** — MSC Rankings");
-			axios.get(url3)
-				.then(function (response) {
-					const data = JSON.parse(response.data.substr(47).slice(0, -2));
-					const newData3 = [];
-
-					data.table.rows.map((main) => {
-						newData3.push(main.c[0].v);
-					})
-					msg.channel.send(newData3.join('\n'));
-					// I need this data here ^^
-					return response.data;
-				})
-				.catch(function (error) {
-					console.log(error);
+			var token = msg.content.split(" ");
+
+			if (token[0] == "!roboedit") {
+				fs.readFile('msg_send.txt', 'utf8', function (err, data) {
+					if (err) throw err;
+
+					msg.channel.messages.fetch(
+						//in around put the ID of the message which you want to edit//
+						{ around: "896366421771182112", limit: 1 })
+						.then(msg => {
+							const fetchedMsg = msg.first();
+							fetchedMsg.edit(data);
+						});
 				});
-		}
+			}
 
-		// function shows the current MSL Rankings for SMS
-		else if (token[0] == "!mslsms") {
-			const url4 = "https://docs.google.com/spreadsheets/d/1elh4wTVHNR0dv-QNklaNLMUNU07VKuaFkZkU9G2XWQ0/gviz/tq?";
-
-			if (msg.bot) return;
-			msg.channel.send("**MSL Season 1** — SMS Rankings");
-			axios.get(url4)
-				.then(function (response) {
-					const data = JSON.parse(response.data.substr(47).slice(0, -2));
-					const newData4 = [];
-
-					data.table.rows.map((main) => {
-						newData4.push(main.c[0].v);
-					})
-					msg.channel.send(newData4.join('\n'));
-					// I need this data here ^^
-					return response.data;
-				})
-				.catch(function (error) {
-					console.log(error);
+			else if (token[0] == "!robosend") {
+				fs.readFile('msg_send.txt', 'utf8', function (err, data) {
+					if (err) throw err;
+					client.channels.cache.get('902508170126180352').send(data)
+					.catch((err) => {
+						errorHandler(err, msg)
+						
+					});
 				});
-		}
-
-		// function allows the user to report the score for a tournament (or ranked, eventually) match
-		else if (token[0] == "!mscreport") {
-			if (msg.bot) return;
-			try {
-				let score = "";
-
-				// get the score and the discord ids if available
-				let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
-				score = token[2];
-				let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
-
-				// set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
-				if (p1 == undefined)
-					p1 = token[1];
-				else
-					p1 = token[1] + p1.username;
-
-				if (p2 == undefined)
-					p2 = token[3];
-				else
-					p2 = token[3] + p2.username;
-
-				console.log(p1);
-				console.log(p2);
-				console.log(token.length);
-
-				sql.connect(config, function (err) {
-					// create the request object
-					var request = new sql.Request();
-
-					let query = "";
-
-					if (token.length == 4)
-						query = "exec reportScore @gametype, @p1, @p2, @score;"
-					/*
-					else if (token.length == 5) {
-						query = "exec reportScoreMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
-					}
-					else if (token.length == 6) {
-						query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
-					}
-					else if (token.length == 7) {
-						query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
-					}
-					*/
-					console.log(query);
-
-					request.input("gametype", msc);
-					request.input("p1", p1);
-					request.input("p2", p2);
-					request.input("score", score);
-
-					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
-					})
-				})
-
-				// todo: broken, need to fix - also, add X or something if it fails
-				msg.react('☑️');
 			}
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
+
+			else if (token[0] == "!sandbox") {
+				fs.readFile('sandbox_msc.txt', 'utf8', function (err, data) {
+					if (err) throw err;
+					client.channels.cache.get('897757084299431936').send(data)
+					.catch((err) => {
+						errorHandler(err, msg)
+						
+					});
+				});
+				fs.readFile('sandbox_sms.txt', 'utf8', function (err, data) {
+					if (err) throw err;
+					client.channels.cache.get('897757084299431936').send(data)
+					.catch((err) => {
+						errorHandler(err, msg)
+						
+					});
+				});
 			}
-		}
 
-		// function allows the user to report the score for a tournament (or ranked, eventually) match
-		else if (token[0] == "!smsreport") {
-			if (msg.bot) return;
-			try {
-				let score = "";
+			else if (token[0] == "!msciso") {
+				if (msg.bot)
+					return;
 
-				// get the score and the discord ids if available
-				let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
-				score = token[2];
-				let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+				msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc")
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
 
-				// set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
-				if (p1 == undefined)
-					p1 = token[1];
-				else
-					p1 = token[1] + p1.username;
-
-				if (p2 == undefined)
-					p2 = token[3];
-				else
-					p2 = token[3] + p2.username;
-
-				console.log(p1);
-				console.log(p2);
-				console.log(token.length);
-
-				sql.connect(config, function (err) {
-					// create the request object
-					var request = new sql.Request();
-
-					let query = "";
-
-					if (token.length == 4)
-						query = "exec reportScore @gametype, @p1, @p2, @score;"
-					/*
-					else if (token.length == 5) {
-						query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
-					}
-					else if (token.length == 6) {
-						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
-					}
-					else if (token.length == 7) {
-						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
-					}
-					*/
-					console.log(query);
-
-					request.input("gametype", sms);
-					request.input("p1", p1);
-					request.input("p2", p2);
-					request.input("score", score);
-
-					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
-					})
-				})
-
-				msg.react('☑️');
+				msg.delete();
 			}
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
+
+			else if (token[0] == "!smsiso") {
+				if (msg.bot)
+					return;
+
+				msg.author.send("Below is a link to Super Mario Strikers NTSC ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0")
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+
+				msg.delete();
 			}
-		}
 
-		else if (token[0] == "!randomrule") {
-			if (msg.bot) return;
-			msg.channel.send(rules[Math.floor(Math.random() * rules.length)]);
-		}
+			else if (token[0] == "!rechargediso") {
+				if (msg.bot)
+					return;
 
-		// display a one-off command as created by !upsertcommand
-		else if (token[0].substring(0, 1) == "!") {
-			if (msg.bot) return;
-			try {
-				sql.connect(config, function (err) {
-					var request = new sql.Request();
+				msg.author.send("Below is a link to Mario Strikers Recharged, which has improved Strikers ABC scenarios and allows for fast tournement play on most fields.\n\nhttps://drive.google.com/file/d/1ip-V4xFpf9-BJEMOaZw1hZw1nPVXXU88")
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
 
-					let query = "select * from DiscordCommands where Token = @token";
-					request.input("token", token[0]);
+				msg.delete();
+			}
 
-					request.query(query, function (err, recordset) {
-						if (err) {
-							console.log(err);
-							console.react('❌');
+			// function allows for the creation of new one-off commands - good for showing bracket images or answering frequently asked questions
+			else if (token[0] == "!upsertcommand") {
+				try {
+					sql.connect(config, function (err) {
+						var request = new sql.Request();
+
+						let param = "";
+
+						for (let i = 2; i < token.length; i++) {
+							param += token[i] + " ";
 						}
-						else {
-							let data = recordset.recordset;
-							if (recordset.recordset.length == 0) {
-								return;
+
+						let query = "exec UpsertCommand @token, @response";
+
+						request.input('token', token[1]);
+						request.input('response', param);
+
+						request.query(query, function (err, recordset) {
+							if (err) console.log(err)
+						});
+					})
+
+					msg.react('☑️');
+				}
+
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+				}
+			}
+
+			// function removes one-off commands
+			else if (token[0] == "!removecommand") {
+				try {
+					sql.connect(config, function (err) {
+						var request = new sql.Request();
+
+						let query = "delete from discordCommands where token = @token";
+
+						request.input("token", "!" + token[1]);
+
+						request.query(query, function (err, recordset) {
+							if (err) console.log(err)
+						});
+					})
+
+					msg.react('☑️');
+				}
+
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+				}
+			}
+
+			else if (token[0] == "!mscallcomp") {
+				p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
+				p2LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
+
+				mscCaptains = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)]
+				p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)]
+				remainingCaptains = CONSTANTS.MSC_CAPTAINS.filter(captain => captain !== p1Captain)
+				p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
+
+				randStadium = CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p2LastSK]}\n:stadium: **${randStadium}**\n:1234: **Best of 3**\n:goal: **First to 10**`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!smsallcomp") {
+				p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
+				remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
+				p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
+
+				randStadium = CONSTANTS.SMS_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_COMP_STADIUMS.length)]
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.smstoad}\n:stadium: **${randStadium}**\n:1234: **Best of 5**\n:alarm_clock: **5 Minutes**\n${EMOJIS.megastrike} **Super Strikes Off**`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!smsallrandom") {
+				p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
+				remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
+				p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
+
+				p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
+				p2SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
+
+				maxSeries = 9;
+				minSeries = 1;
+				seriesAmount = Math.floor(Math.random() * (maxSeries - minSeries));
+				seriesAmount = seriesAmount % 2 != 0 ? seriesAmount += 1 : seriesAmount;
+				seriesAmount += minSeries;
+
+
+				randStadium = CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]
+
+				times = [2, 3, 4, 5]
+				randTime = times[Math.floor(Math.random() * times.length)]
+
+				superStrikes = Math.floor(Math.random() + .5) ? "On" : "Off"
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:alarm_clock: **${randTime} Minutes**\n${EMOJIS.megastrike} **Super Strikes ${superStrikes}**`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				})
+			}
+
+			else if (token[0] == "!smsct" || token[0] == "!smscompteam") {
+				p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!smsrt" || token[0] == "!smsrandomteam") {
+				p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
+				p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+
+			}
+
+			else if (token[0] == "!mscallrandom") {
+
+				p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+				p2SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+				p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+				p2SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+				p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+				p2SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+
+				p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
+				remainingCaptains = CONSTANTS.MSC_CAPTAINS.filter(captain => captain !== p1Captain)
+				p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
+
+				randStadium = CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]
+
+				maxSeries = 9;
+				minSeries = 1;
+				seriesAmount = Math.floor(Math.random() * (maxSeries - minSeries));
+				seriesAmount = seriesAmount % 2 != 0 ? seriesAmount += 1 : seriesAmount;
+				seriesAmount += minSeries;
+
+				minGoals = 3;
+				maxGoals = 10;
+				goalAmount = Math.floor(Math.random() * (maxSeries - minSeries)) + minSeries;
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK1]} ${EMOJIS[p2SK2]} ${EMOJIS[p2SK3]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:goal: **First to ${goalAmount}**`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!mscclassic" || token[0] == "!smsrs" || token[0] == "!smsrandomstage") {
+				msg.channel.send(`>>> **${CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]}**`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!msccs" || token[0] == "!msccompstage") {
+				msg.channel.send(`>>> **${CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]}**`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!mscrs" || token[0] == "!mscrandomstage") {
+				msg.channel.send(`>>> **${CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]}**`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!mscct" || token[0] == "!msccompteam") {
+				p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
+				p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+
+			}
+
+			else if (token[0] == "!mscrt" || token[0] == "!mscrandomteam") {
+
+				p1SK1 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+				p1SK2 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+				p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+
+				p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			else if (token[0] == "!mscdbt" || token[0] == "!mscdrybonesteam") {
+
+				p1Captain = CONSTANTS.MSC_CAPTAINS[Math.floor(Math.random() * CONSTANTS.MSC_CAPTAINS.length)];
+				p1SK3 = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)];
+
+
+				msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscdrybones} ${EMOJIS[p1SK3]}`)
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			// function displays the tier list for MSC
+			else if (token[0] == "!flip") {
+				if (msg.bot) return;
+
+				let x = Math.random();
+
+				if (x >= .5)
+					msg.reply("heads!");
+				else
+					msg.reply("tails!");
+			}
+
+			// function displays the tier list for MSC
+			else if (token[0] == "!msctl") {
+				if (msg.bot) return;
+
+				msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189371847381022/unknown.png")
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+				msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189471533400074/unknown.png")
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});
+			}
+
+			// function shows the ratings of all active players for MSC
+			else if (token[0] == "!mscrating") {
+				try {
+					sql.connect(config, function (err) {
+						var request = new sql.Request();
+
+						let query = "exec GetRatingsForDiscord @gametype";
+						request.input('gametype', msc);
+
+						request.query(query, function (err, recordset) {
+							if (err) {
+								console.log(err);
+								msg.react('❌');
 							}
 							else {
-								msg.channel.send(recordset.recordset[0].Response);
+								let data = recordset.recordset;
+								const newData = [];
+								for (let i = 0; i < recordset.recordset.length; i++) {
+									newData.push(recordset.recordset[i].line)
+									.catch((err) => {
+										errorHandler(err, msg)
+										
+									});
+									console.log(recordset.recordset[i].line);
+								}
+
+								msg.channel.send(newData.join('\n'));
 							}
-						}
+						})
 					})
-				})
+				}
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+				}
 			}
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
+
+			// function shows the ratings of all active players for SMS
+			else if (token[0] == "!smsrating") {
+				try {
+					sql.connect(config, function (err) {
+						var request = new sql.Request();
+
+						let query = "exec GetRatingsForDiscord @gametype";
+						request.input('gametype', sms);
+
+						request.query(query, function (err, recordset) {
+							if (err) {
+								console.log(err);
+								msg.react('❌');
+							}
+							else {
+								let data = recordset.recordset;
+								const newData = [];
+								for (let i = 0; i < recordset.recordset.length; i++) {
+									newData.push(recordset.recordset[i].line);
+									console.log(recordset.recordset[i].line);
+								}
+
+								msg.channel.send(newData.join('\n'))
+								.catch((err) => {
+									errorHandler(err, msg)
+									
+								});
+							}
+						})
+					})
+				}
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+				}
 			}
-		}
+
+			// function shows the current MSL Rankings for MSC
+			else if (token[0] == "!mslmsc") {
+				const url3 = "https://docs.google.com/spreadsheets/d/1Cf5YggxcwNVMCTyQ1Xz7wC7OaOxVoC1rQIeEJSXo6s8/gviz/tq?";
+
+				if (msg.bot) return;
+				msg.channel.send("**MSL Season 1** — MSC Rankings")
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});;
+				axios.get(url3)
+					.then(function (response) {
+						const data = JSON.parse(response.data.substr(47).slice(0, -2));
+						const newData3 = [];
+
+						data.table.rows.map((main) => {
+							newData3.push(main.c[0].v);
+						})
+						msg.channel.send(newData3.join('\n'))
+						.catch((err) => {
+							errorHandler(err, msg)
+							
+						});
+						// I need this data here ^^
+						return response.data;
+					})
+					.catch(function (error) {
+						console.log(error);
+					});
+			}
+
+			// function shows the current MSL Rankings for SMS
+			else if (token[0] == "!mslsms") {
+				const url4 = "https://docs.google.com/spreadsheets/d/1elh4wTVHNR0dv-QNklaNLMUNU07VKuaFkZkU9G2XWQ0/gviz/tq?";
+
+				if (msg.bot) return;
+				msg.channel.send("**MSL Season 1** — SMS Rankings")
+				.catch((err) => {
+					errorHandler(err, msg)
+					
+				});;
+				axios.get(url4)
+					.then(function (response) {
+						const data = JSON.parse(response.data.substr(47).slice(0, -2));
+						const newData4 = [];
+
+						data.table.rows.map((main) => {
+							newData4.push(main.c[0].v);
+						})
+						msg.channel.send(newData4.join('\n'))
+						.catch((err) => {
+							errorHandler(err, msg)
+							
+						});
+						// I need this data here ^^
+						return response.data;
+					})
+					.catch(function (error) {
+						console.log(error);
+					});
+			}
+
+			// function allows the user to report the score for a tournament (or ranked, eventually) match
+			else if (token[0] == "!mscreport") {
+				if (msg.bot) return;
+				try {
+					let score = "";
+
+					// get the score and the discord ids if available
+					let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+					score = token[2];
+					let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+
+					// set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
+					if (p1 == undefined)
+						p1 = token[1];
+					else
+						p1 = token[1] + p1.username;
+
+					if (p2 == undefined)
+						p2 = token[3];
+					else
+						p2 = token[3] + p2.username;
+
+					console.log(p1);
+					console.log(p2);
+					console.log(token.length);
+
+					sql.connect(config, function (err) {
+						// create the request object
+						var request = new sql.Request();
+
+						let query = "";
+
+						if (token.length == 4)
+							query = "exec reportScore @gametype, @p1, @p2, @score;"
+						/*
+						else if (token.length == 5) {
+							query = "exec reportScoreMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
+						}
+						else if (token.length == 6) {
+							query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
+						}
+						else if (token.length == 7) {
+							query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
+						}
+						*/
+						console.log(query);
+
+						request.input("gametype", msc);
+						request.input("p1", p1);
+						request.input("p2", p2);
+						request.input("score", score);
+
+						request.query(query, function (err, recordset) {
+							if (err) console.log(err)
+						})
+					})
+
+					// todo: broken, need to fix - also, add X or something if it fails
+					msg.react('☑️');
+				}
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+				}
+			}
+
+			// function allows the user to report the score for a tournament (or ranked, eventually) match
+			else if (token[0] == "!smsreport") {
+				if (msg.bot) return;
+				try {
+					let score = "";
+
+					// get the score and the discord ids if available
+					let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+					score = token[2];
+					let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+
+					// set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
+					if (p1 == undefined)
+						p1 = token[1];
+					else
+						p1 = token[1] + p1.username;
+
+					if (p2 == undefined)
+						p2 = token[3];
+					else
+						p2 = token[3] + p2.username;
+
+					console.log(p1);
+					console.log(p2);
+					console.log(token.length);
+
+					sql.connect(config, function (err) {
+						// create the request object
+						var request = new sql.Request();
+
+						let query = "";
+
+						if (token.length == 4)
+							query = "exec reportScore @gametype, @p1, @p2, @score;"
+						/*
+						else if (token.length == 5) {
+							query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
+						}
+						else if (token.length == 6) {
+							query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
+						}
+						else if (token.length == 7) {
+							query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
+						}
+						*/
+						console.log(query);
+
+						request.input("gametype", sms);
+						request.input("p1", p1);
+						request.input("p2", p2);
+						request.input("score", score);
+
+						request.query(query, function (err, recordset) {
+							if (err) console.log(err)
+						})
+					})
+
+					msg.react('☑️');
+				}
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+				}
+			}
+
+			else if (token[0] == "!randomrule") {
+				if (msg.bot) return;
+				msg.channel.send(rules[Math.floor(Math.random() * rules.length)]);
+			}
+
+			// display a one-off command as created by !upsertcommand
+			else if (token[0].substring(0, 1) == "!") {
+				if (msg.bot) return;
+				try {
+					sql.connect(config, function (err) {
+						var request = new sql.Request();
+
+						let query = "select * from DiscordCommands where Token = @token";
+						request.input("token", token[0]);
+
+						request.query(query, function (err, recordset) {
+							if (err) {
+								console.log(err);
+								console.react('❌');
+							}
+							else {
+								let data = recordset.recordset;
+								if (recordset.recordset.length == 0) {
+									msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
+									.catch((err) => {
+										errorHandler(err,msg);
+									});
+								}
+								else {
+									msg.channel.send(recordset.recordset[0].Response)
+									.catch((err) => {
+										errorHandler(err, msg)
+										
+									});
+								}
+							}
+						})
+					})
+				}
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+				}
+			}
 	}
+}
+
+const errorHandler = (err, msg) => {
+	msg.channel.send(`>>> Sorry, we got lost completing your request ${EMOJIS.mscwariodizzy}\n\nSupport for this bot can be reached through pinging *@Developer*`);
+	client.channels.fetch(err.path.split('/')[2]).then(channel => {
+		client.channels.cache.get(CONSTANTS.DEBUG_CHANNEL)
+		.send(`Error Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\nChannel: ${channel.name}\n\nStack Trace: ${err.stack}`)
+		.catch((err) => {
+			console.log(err)
+		});
+	})
 }
 
 //REACTION ROLES
