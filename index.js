@@ -97,9 +97,17 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 
-	if (msg.channel.id) {
+	if (msg.channel.id == process.env.TEST_CHANNEL) {
 			var token = msg.content.split(" ");
-
+			if (token[0] == "!userrole") {
+				const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
+				await guild.members.fetch('576433115174666240')
+				.then((user) => {
+					console.log(user)
+					user.roles.add(CONSTANTS.ROLES.SUPERSTAR_ROLE)
+					user.roles.remove(CONSTANTS.ROLES.MEGASTRIKER_ROLE)
+				})
+			}
 			if (token[0] == "!roboedit") {
 				fs.readFile('msg_send.txt', 'utf8', function (err, data) {
 					if (err) throw err;
@@ -143,7 +151,6 @@ async function messageManager(msg) {
 					});
 				});
 			}
-
 			else if (token[0] == "!msciso") {
 				if (msg.bot)
 					return;
@@ -734,6 +741,7 @@ async function messageManager(msg) {
 							else {
 								let data = recordset.recordset;
 								if (recordset.recordset.length == 0) {
+									msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
 									return;
 								}
 								else {
@@ -758,7 +766,7 @@ async function messageManager(msg) {
 const errorHandler = (err, msg) => {
 	msg.channel.send(`>>> Sorry, we got lost completing your request ${EMOJIS.mscwariodizzy}\n\nSupport for this bot can be reached through pinging *@Developer*`);
 	client.channels.fetch(err.path.split('/')[2]).then(channel => {
-		client.channels.cache.get(CONSTANTS.DEBUG_CHANNEL)
+		client.channels.cache.get(CONSTANTS.CHANNELS.DEBUG_CHANNEL)
 		.send(`Error Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\nChannel: ${channel.name}\n\nStack Trace: ${err.stack}`)
 		.catch((err) => {
 			console.log(err)
