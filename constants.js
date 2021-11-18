@@ -3,6 +3,7 @@ const ROLES = {
     DEVELOPER_ROLE: '902508392227176489'
 }
 const GUILD_ID = '268737069939949569'
+const DEBUG_CHANNEL = '910923586636771409'
 
 const RESTRICTED_COMMANDS = [
     {
@@ -19,4 +20,4 @@ const SMS_ALL_STADIUMS = ['The Battle Dome', 'Bowser Stadium', 'Crater Field', '
 const SMS_COMP_STADIUMS = ['The Battle Dome', 'Bowser Stadium', 'Crater Field', 'Konga Coliseum', 'The Palace', 'Pipeline Central', 'The Underground'];
 const SMS_SK = ['smstoad', 'smskoopa', 'smsbirdo', 'smshammerbro'];
 const SMS_CAPTAIN = ['smswaluigi', 'smswario', 'smsdk', 'smspeach', 'smsdaisy', 'smsluigi', 'smsmario', 'smsyoshi'];
-module.exports = {ROLES, GUILD_ID, RESTRICTED_COMMANDS, MSC_SK, MSC_CAPTAINS, MSC_ALL_STADIUMS, MSC_COMP_STADIUMS, SMS_ALL_STADIUMS, SMS_COMP_STADIUMS, SMS_SK, SMS_CAPTAIN};
+module.exports = {ROLES, GUILD_ID, DEBUG_CHANNEL, RESTRICTED_COMMANDS, MSC_SK, MSC_CAPTAINS, MSC_ALL_STADIUMS, MSC_COMP_STADIUMS, SMS_ALL_STADIUMS, SMS_COMP_STADIUMS, SMS_SK, SMS_CAPTAIN};
