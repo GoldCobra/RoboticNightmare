@@ -31,7 +31,9 @@ module.exports = {
     smshammerbro: "<:smshammerbro:909825129599598622>",
     smskoopa: "<:smskoopa:909825168501792838>",
     smsbirdo: "<:smsbirdo:910000528853991484>",
-    megastrike: "<a:megastrike:862605239025664000>"
+    megastrike: "<a:megastrike:862605239025664000>",
+    kekw: "<:kekw:908736619836755978>",
+    mscwariodizzy: "<:mscwariodizzy:712282852594548777>"
 
 
 
