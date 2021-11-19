@@ -4,25 +4,22 @@
 `!mscrules` — show the competitive rules document.
 `!msctl` — show the competitive character tier list.
 `!mscallcomp` — create a competitive match (random captains, always minimum 2 Boos as sidekicks, competitive stadium, Bo3, first to 10).
-`!mscallrandom` — create a random match (random captains, random sidekicks, random stadium, Bo1-9, First to 3-10).
+`!mscallrandom` — create a random match (random captains and sidekicks, random stadium, Bo1-9, First to 3-10).
 `!mscclassic` — pick a classic stadium.
 `!msccs` or `!msccompstage` — pick a competitive stadium/stage.
 `!mscct` or `!msccompteam` — create a competitive team (random captain, always minimum 2 Boos as sidekicks).
-`!mscdbt` or `!mscdrybonesteam` — pick a Competitive Team with minimum 1 Dry Bones.
+`!mscdbt` or `!mscdrybonesteam` — pick a competitive team with minimum 1 Dry Bones.
 `!mscrs` or `!mscrandomstage` — pick a random stadium/stage.
-`!mscrt` or `!mscrandomteam` — pick a random team (random captain, random sidekicks).
-`!code add game MSC PAL 1111-2222-3333` — Adding Friend Codes for MSC PAL-Version (EU).
-`!code add game MSC NTSC 4444-5555-6666` — Adding Friend Codes for MSC NTSC-Version (US).
-`!code lookup @user` — Looking up Friend Codes of server members.
-`!code lookup` — Looking up your Friend Codes.
-`!code edit game MSC PAL 1111-2222-3333` — Editing Friend Codes for MSC PAL-Version.
-`!code edit game MSC NTSC 4444-5555-6666` — Editing Friend Codes for MSC NTSC-Version.
-`!code remove game MSC PAL` — Removing Friend Codes for MSC PAL-Version
-`!code remove game MSC NTSC` — Removing Friend Codes for MSC NTSC-Version.
-`!flag COUNTRY` — Sets your flag to show in your code lookup. Limited variety!
+`!mscrt` or `!mscrandomteam` — pick a random team (random captain and sidekicks).
+`!code add game MSC PAL 1111-2222-3333` — add friend codes for PAL-Version.
+`!code add game MSC NTSC 4444-5555-6666` — add friend codes for NTSC-Version.
+`!code lookup @user` — look up friend codes of server members.
+`!code lookup` — look up your friend codes.
+`!code edit game MSC PAL 1111-2222-3333` — edit friend codes for PAL-Version.
+`!code edit game MSC NTSC 4444-5555-6666` — edit friend codes for NTSC-Version.
+`!code remove game MSC PAL` — remove friend codes for PAL-Version
+`!code remove game MSC NTSC` — remove friend codes for NTSC-Version.
+`!flag COUNTRY` — set your flag.
 
-*Copy/paste the commands above, modify your friendcode only and hit Enter!*
-*Make sure to use the correct code format XXXX-XXXX-XXXX. Any different code format WILL NOT work!*
-
-<:smsball:781493087342952479>  —  **Super Mario Strikers**
-`!mslsms` — show the current MSL
+*Copy/paste the commands above, modify your friend code only and hit Enter!*
+*Make sure to use the code format XXXX-XXXX-XXXX. Any different code format WILL NOT work!*
