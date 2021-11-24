@@ -63,14 +63,7 @@ async function cronJob() {
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
-
-
-	// give pied his role back
-	/*
-	const pied = client.guild.members.cache.get('151554896339009536');
-	const legend = '862992675384197120';
-	pied.roles.add(legend);
-	*/
+  
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
