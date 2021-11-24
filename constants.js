@@ -31,4 +31,5 @@ const SMS_ALL_STADIUMS = ['The Battle Dome', 'Bowser Stadium', 'Crater Field', '
 const SMS_COMP_STADIUMS = ['The Battle Dome', 'Bowser Stadium', 'Crater Field', 'Konga Coliseum', 'The Palace', 'Pipeline Central', 'The Underground'];
 const SMS_SK = ['smstoad', 'smskoopa', 'smsbirdo', 'smshammerbro'];
 const SMS_CAPTAIN = ['smswaluigi', 'smswario', 'smsdk', 'smspeach', 'smsdaisy', 'smsluigi', 'smsmario', 'smsyoshi'];
-module.exports = {ROLES, GUILD_ID, CHANNELS, RESTRICTED_COMMANDS, MSC_SK, MSC_CAPTAINS, MSC_ALL_STADIUMS, MSC_COMP_STADIUMS, SMS_ALL_STADIUMS, SMS_COMP_STADIUMS, SMS_SK, SMS_CAPTAIN};
+const EXTERNAL_BOT_COMMANDS = ['!flag', '!code', '!error']
+module.exports = {ROLES, GUILD_ID, CHANNELS, RESTRICTED_COMMANDS, MSC_SK, MSC_CAPTAINS, MSC_ALL_STADIUMS, MSC_COMP_STADIUMS, SMS_ALL_STADIUMS, SMS_COMP_STADIUMS, SMS_SK, SMS_CAPTAIN, EXTERNAL_BOT_COMMANDS};
