@@ -169,7 +169,7 @@ async function messageManager(msg) {
 			msg.delete();
 		}
 
-		else if (token[0] == "!rechargediso") {
+		else if (token[0] == "!rechargediso" || token[0] == "!trainingiso") {
 			if (msg.bot)
 				return;
 
