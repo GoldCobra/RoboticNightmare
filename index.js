@@ -443,6 +443,19 @@ async function messageManager(msg) {
 				});
 		}
 
+		else if (token[0] == "!smstl") {
+			if (msg.bot) return;
+
+			msg.channel.send("https://media.discordapp.net/attachments/790895921989812254/912453085253763072/TierList_SMS_Captain_3.png")
+			.catch((err) => {
+				errorHandler(err,msg)
+			});
+			msg.channel.send("https://media.discordapp.net/attachments/790895921989812254/912453085622833212/TierList_SMS_Sidekick_2.png")
+			.catch((err) => {
+				errorHandler(err,msg)
+			});
+		}
+
 		// function shows the ratings of all active players for MSC
 		else if (token[0] == "!mscrating") {
 			try {
@@ -733,10 +746,12 @@ async function messageManager(msg) {
 						else {
 							let data = recordset.recordset;
 							if (recordset.recordset.length == 0) {
-								msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
-									.catch((err) => {
-										errorHandler(err, msg);
-									});
+								if (CONSTANTS.EXTERNAL_BOT_COMMANDS.includes(token[0])) {
+									msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
+										.catch((err) => {
+											errorHandler(err, msg);
+										});
+									}
 							}
 							else {
 								msg.channel.send(recordset.recordset[0].Response)
