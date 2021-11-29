@@ -166,7 +166,7 @@ async function messageManager(msg) {
 			if (msg.bot)
 				return;
 
-			msg.author.send("Below is a link to Mario Strikers Recharged, which has improved Strikers ABC scenarios and allows for fast tournement play on most fields.\n\nhttps://drive.google.com/file/d/1ip-V4xFpf9-BJEMOaZw1hZw1nPVXXU88")
+			msg.author.send("Below is a link to Mario Strikers Training Mode, which has improved Strikers ABC scenarios and allows for fast tournement play on most fields.\n\nhttps://drive.google.com/file/d/1ip-V4xFpf9-BJEMOaZw1hZw1nPVXXU88")
 				.catch((err) => {
 					errorHandler(err, msg)
 
