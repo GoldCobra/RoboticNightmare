@@ -193,7 +193,10 @@ async function messageManager(msg) {
 					request.input('response', param);
 
 					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
+						if (err) {
+							console.log(err)
+							errorHandler(err,msg);
+						}
 					});
 				})
 
@@ -203,6 +206,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
+				errorHandler(err,msg)
 			}
 		}
 
@@ -217,7 +221,10 @@ async function messageManager(msg) {
 					request.input("token", "!" + token[1]);
 
 					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
+						if (err) {
+							console.log(err)
+							errorHandler(err,msg)
+						}
 					});
 				})
 
@@ -227,6 +234,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
+				errorHandler(err,msg)
 			}
 		}
 
@@ -462,6 +470,7 @@ async function messageManager(msg) {
 						if (err) {
 							console.log(err);
 							msg.react('❌');
+							errorHandler(err,msg)
 						}
 						else {
 							let data = recordset.recordset;
@@ -483,6 +492,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
+				errorHandler(err, msg)
 			}
 		}
 
@@ -499,6 +509,7 @@ async function messageManager(msg) {
 						if (err) {
 							console.log(err);
 							msg.react('❌');
+							errorHandler(err,msg)
 						}
 						else {
 							let data = recordset.recordset;
@@ -520,6 +531,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
+				errorHandler(err,msg)
 			}
 		}
 
@@ -551,6 +563,7 @@ async function messageManager(msg) {
 				})
 				.catch(function (error) {
 					console.log(error);
+					errorHandler(err, msg)
 				});
 		}
 
@@ -582,6 +595,7 @@ async function messageManager(msg) {
 				})
 				.catch(function (error) {
 					console.log(error);
+					errorHandler(err, msg)
 				});
 		}
 
@@ -638,7 +652,10 @@ async function messageManager(msg) {
 					request.input("score", score);
 
 					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
+						if (err) {
+							console.log(err)
+							errorHandler(err, msg);
+						}
 					})
 				})
 
@@ -648,6 +665,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
+				errorHandler(err, msg);
 			}
 		}
 
@@ -704,7 +722,10 @@ async function messageManager(msg) {
 					request.input("score", score);
 
 					request.query(query, function (err, recordset) {
-						if (err) console.log(err)
+						if (err) {
+							console.log(err)
+							errorHandler(err,msg);
+						}
 					})
 				})
 
@@ -713,6 +734,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
+				errorHandler(err,msg)
 			}
 		}
 
@@ -734,7 +756,8 @@ async function messageManager(msg) {
 					request.query(query, function (err, recordset) {
 						if (err) {
 							console.log(err);
-							console.react('❌');
+							msg.react('❌');
+							errorHandler(err,msg);
 						}
 						else {
 							let data = recordset.recordset;
@@ -760,6 +783,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
+				errorHandler(err,msg)
 			}
 		}
 	}
