@@ -669,6 +669,18 @@ async function messageManager(msg) {
 			}
 		}
 
+    else if (token[0] == "!preparematch") {
+      if (msg.bot) return;
+      try {
+
+      }
+			catch (error) {
+				console.log(error);
+				msg.react('❌');
+				errorHandler(err,msg)
+			}
+    }
+
 		// function allows the user to report the score for a tournament (or ranked, eventually) match
 		else if (token[0] == "!smsreport") {
 			if (msg.bot) return;
