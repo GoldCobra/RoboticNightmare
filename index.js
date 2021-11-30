@@ -672,8 +672,53 @@ async function messageManager(msg) {
     else if (token[0] == "!preparematch") {
       if (msg.bot) return;
       try {
+        // get the score and the discord ids if available
+				let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
 
-      }
+        let p2 = client.users.cache.get(token[2].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+
+        let gametype = token[3];
+        let tournament = token[4];
+        let stage = token[5];
+
+        sql.connect(config, function (err) {
+					// create the request object
+					var request = new sql.Request();
+
+					let query = "";
+
+					if (token.length == 6)
+						query = "exec reportScore @gametype, @p1, @p2, @score, '', @t, @s, 1;"
+					/*
+					else if (token.length == 5) {
+						query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
+					}
+					else if (token.length == 6) {
+						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
+					}
+					else if (token.length == 7) {
+						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
+					}
+					*/
+					console.log(query);
+
+					request.input("gametype", gametype);
+					request.input("p1", p1);
+					request.input("p2", p2);
+					request.input("score", "0-0");
+          request.input("t", tournament);
+          request.input("s", stage);
+
+					request.query(query, function (err, recordset) {
+						if (err) {
+							console.log(err)
+							errorHandler(err,msg);
+						}
+					})
+				})
+
+				msg.react('☑️');
+			}
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
