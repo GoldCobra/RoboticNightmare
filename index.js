@@ -840,7 +840,7 @@ const discordMessageErrorHandler = (err, msg) => {
 
 const errorHandler = (err,msg, location="internal") => {
 	msg.channel.send(`>>> Sorry, we got lost completing your request ${EMOJIS.mscwariodizzy}\n\nSupport for this bot can be reached through pinging *@Developer*`);
-	client.channels.cache.get(CONSTANTS.DEBUG_CHANNEL)
+	client.channels.cache.get(CONSTANTS.CHANNELS.DEBUG_CHANNEL)
 			.send(`Error Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\Location: ${location}\n\nStack Trace: ${err.stack}`)
 			.catch((err) => {
 				console.log(err)
