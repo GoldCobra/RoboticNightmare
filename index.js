@@ -63,7 +63,7 @@ async function cronJob() {
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
-  
+
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
@@ -195,7 +195,7 @@ async function messageManager(msg) {
 					request.query(query, function (err, recordset) {
 						if (err) {
 							console.log(err)
-							errorHandler(err,msg);
+							errorHandler(err, msg);
 						}
 					});
 				})
@@ -206,7 +206,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err,msg)
+				errorHandler(err, msg)
 			}
 		}
 
@@ -223,7 +223,7 @@ async function messageManager(msg) {
 					request.query(query, function (err, recordset) {
 						if (err) {
 							console.log(err)
-							errorHandler(err,msg)
+							errorHandler(err, msg)
 						}
 					});
 				})
@@ -234,7 +234,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err,msg)
+				errorHandler(err, msg)
 			}
 		}
 
@@ -448,13 +448,13 @@ async function messageManager(msg) {
 			if (msg.bot) return;
 
 			msg.channel.send("https://media.discordapp.net/attachments/790895921989812254/912453085253763072/TierList_SMS_Captain_3.png")
-			.catch((err) => {
-				errorHandler(err,msg)
-			});
+				.catch((err) => {
+					errorHandler(err, msg)
+				});
 			msg.channel.send("https://media.discordapp.net/attachments/790895921989812254/912453085622833212/TierList_SMS_Sidekick_2.png")
-			.catch((err) => {
-				errorHandler(err,msg)
-			});
+				.catch((err) => {
+					errorHandler(err, msg)
+				});
 		}
 
 		// function shows the ratings of all active players for MSC
@@ -470,7 +470,7 @@ async function messageManager(msg) {
 						if (err) {
 							console.log(err);
 							msg.react('❌');
-							errorHandler(err,msg)
+							errorHandler(err, msg)
 						}
 						else {
 							let data = recordset.recordset;
@@ -509,7 +509,7 @@ async function messageManager(msg) {
 						if (err) {
 							console.log(err);
 							msg.react('❌');
-							errorHandler(err,msg)
+							errorHandler(err, msg)
 						}
 						else {
 							let data = recordset.recordset;
@@ -531,7 +531,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err,msg)
+				errorHandler(err, msg)
 			}
 		}
 
@@ -633,17 +633,7 @@ async function messageManager(msg) {
 
 					if (token.length == 4)
 						query = "exec reportScore @gametype, @p1, @p2, @score;"
-					/*
-					else if (token.length == 5) {
-						query = "exec reportScoreMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
-					}
-					else if (token.length == 6) {
-						query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
-					}
-					else if (token.length == 7) {
-						query = "exec ReportScoreWithTourneyDetailsMSC '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
-					}
-					*/
+
 					console.log(query);
 
 					request.input("gametype", msc);
@@ -669,13 +659,13 @@ async function messageManager(msg) {
 			}
 		}
 
-    else if (token[0] == "!preparematch") {
-      if (msg.bot) return;
-      try {
-        // get the score and the discord ids if available
+		else if (token[0] == "!preparematch") {
+			if (msg.bot) return;
+			try {
+				// get the score and the discord ids if available
 				let p1 = client.users.cache.get(token[2].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
 
-        let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+				let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
 
 				// set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
 				if (p1 == undefined)
@@ -688,11 +678,11 @@ async function messageManager(msg) {
 				else
 					p2 = token[3] + p2.username;
 
-        let gametype = token[1];
-        let tournament = token[4];
-        let stage = token[5];
+				let gametype = token[1];
+				let tournament = token[4];
+				let stage = token[5];
 
-        sql.connect(config, function (err) {
+				sql.connect(config, function (err) {
 					// create the request object
 					var request = new sql.Request();
 
@@ -700,30 +690,20 @@ async function messageManager(msg) {
 
 					if (token.length == 6)
 						query = "exec reportScore @gametype, @p1, @p2, @score, null, @t, @s, 1;"
-					/*
-					else if (token.length == 5) {
-						query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
-					}
-					else if (token.length == 6) {
-						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
-					}
-					else if (token.length == 7) {
-						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
-					}
-					*/
+
 					console.log(query);
 
 					request.input("gametype", gametype);
 					request.input("p1", p1);
 					request.input("p2", p2);
 					request.input("score", "0-0");
-          request.input("t", tournament);
-          request.input("s", stage);
+					request.input("t", tournament);
+					request.input("s", stage);
 
 					request.query(query, function (err, recordset) {
 						if (err) {
 							console.log(err)
-							errorHandler(err,msg);
+							errorHandler(err, msg);
 						}
 					})
 				})
@@ -733,9 +713,9 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err,msg)
+				errorHandler(err, msg)
 			}
-    }
+		}
 
 		// function allows the user to report the score for a tournament (or ranked, eventually) match
 		else if (token[0] == "!smsreport") {
@@ -771,17 +751,7 @@ async function messageManager(msg) {
 
 					if (token.length == 4)
 						query = "exec reportScore @gametype, @p1, @p2, @score;"
-					/*
-					else if (token.length == 5) {
-						query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
-					}
-					else if (token.length == 6) {
-						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '';"
-					}
-					else if (token.length == 7) {
-						query = "exec ReportScoreWithTourneyDetailsSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "', '" + token[5] + "', '" + token[6] + "';"
-					}
-					*/
+
 					console.log(query);
 
 					request.input("gametype", sms);
@@ -792,7 +762,7 @@ async function messageManager(msg) {
 					request.query(query, function (err, recordset) {
 						if (err) {
 							console.log(err)
-							errorHandler(err,msg);
+							errorHandler(err, msg);
 						}
 					})
 				})
@@ -802,7 +772,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err,msg)
+				errorHandler(err, msg)
 			}
 		}
 
@@ -825,7 +795,7 @@ async function messageManager(msg) {
 						if (err) {
 							console.log(err);
 							msg.react('❌');
-							errorHandler(err,msg);
+							errorHandler(err, msg);
 						}
 						else {
 							let data = recordset.recordset;
@@ -835,7 +805,7 @@ async function messageManager(msg) {
 										.catch((err) => {
 											errorHandler(err, msg);
 										});
-									}
+								}
 							}
 							else {
 								msg.channel.send(recordset.recordset[0].Response)
@@ -851,7 +821,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err,msg)
+				errorHandler(err, msg)
 			}
 		}
 	}
