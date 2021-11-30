@@ -111,7 +111,7 @@ async function messageManager(msg) {
 				if (err) throw err;
 				client.channels.cache.get('902508170126180352').send(data)
 					.catch((err) => {
-						errorHandler(err, msg)
+						discordMessageErrorHandler(err, msg)
 
 					});
 			});
@@ -122,7 +122,7 @@ async function messageManager(msg) {
 				if (err) throw err;
 				client.channels.cache.get('897757084299431936').send(data)
 					.catch((err) => {
-						errorHandler(err, msg)
+						discordMessageErrorHandler(err, msg)
 
 					});
 			});
@@ -130,7 +130,7 @@ async function messageManager(msg) {
 				if (err) throw err;
 				client.channels.cache.get('897757084299431936').send(data)
 					.catch((err) => {
-						errorHandler(err, msg)
+						discordMessageErrorHandler(err, msg)
 
 					});
 			});
@@ -142,7 +142,7 @@ async function messageManager(msg) {
 
 			msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc")
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 
@@ -155,7 +155,7 @@ async function messageManager(msg) {
 
 			msg.author.send("Below is a link to Super Mario Strikers NTSC ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0")
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 
@@ -168,7 +168,7 @@ async function messageManager(msg) {
 
 			msg.author.send("Below is a link to Mario Strikers Training Mode, which has improved Strikers ABC scenarios and allows for fast tournement play on most fields.\n\nhttps://drive.google.com/file/d/1ip-V4xFpf9-BJEMOaZw1hZw1nPVXXU88")
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 
@@ -251,7 +251,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p2LastSK]}\n:stadium: **${randStadium}**\n:1234: **Best of 3**\n:goal: **First to 10**`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -265,7 +265,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS.smstoad}\n:stadium: **${randStadium}**\n:1234: **Best of 5**\n:alarm_clock: **5 Minutes**\n${EMOJIS.megastrike} **Super Strikes Off**`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -294,7 +294,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:alarm_clock: **${randTime} Minutes**\n${EMOJIS.megastrike} **Super Strikes ${superStrikes}**`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				})
 		}
@@ -304,7 +304,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -314,7 +314,7 @@ async function messageManager(msg) {
 			p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 
@@ -347,7 +347,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}   **VS**   ${EMOJIS[p2Captain]} ${EMOJIS[p2SK1]} ${EMOJIS[p2SK2]} ${EMOJIS[p2SK3]}\n:stadium: **${randStadium}**\n:1234: **Best of ${seriesAmount}**\n:goal: **First to ${goalAmount}**`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -355,7 +355,7 @@ async function messageManager(msg) {
 		else if (token[0] == "!mscclassic" || token[0] == "!smsrs" || token[0] == "!smsrandomstage") {
 			msg.channel.send(`>>> **${CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]}**`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -363,7 +363,7 @@ async function messageManager(msg) {
 		else if (token[0] == "!msccs" || token[0] == "!msccompstage") {
 			msg.channel.send(`>>> **${CONSTANTS.MSC_COMP_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_COMP_STADIUMS.length)]}**`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -371,7 +371,7 @@ async function messageManager(msg) {
 		else if (token[0] == "!mscrs" || token[0] == "!mscrandomstage") {
 			msg.channel.send(`>>> **${CONSTANTS.MSC_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.MSC_ALL_STADIUMS.length)]}**`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -382,7 +382,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscboo} ${EMOJIS[p1LastSK]}`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 
@@ -398,7 +398,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK1]} ${EMOJIS[p1SK2]} ${EMOJIS[p1SK3]}`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -411,7 +411,7 @@ async function messageManager(msg) {
 
 			msg.channel.send(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.mscboo} ${EMOJIS.mscdrybones} ${EMOJIS[p1SK3]}`)
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -434,12 +434,12 @@ async function messageManager(msg) {
 
 			msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189371847381022/unknown.png")
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 			msg.channel.send("https://media.discordapp.net/attachments/806813942218883073/869189471533400074/unknown.png")
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});
 		}
@@ -448,13 +448,13 @@ async function messageManager(msg) {
 			if (msg.bot) return;
 
 			msg.channel.send("https://media.discordapp.net/attachments/790895921989812254/912453085253763072/TierList_SMS_Captain_3.png")
-				.catch((err) => {
-					errorHandler(err, msg)
-				});
+			.catch((err) => {
+				discordMessageErrorHandler(err,msg)
+			});
 			msg.channel.send("https://media.discordapp.net/attachments/790895921989812254/912453085622833212/TierList_SMS_Sidekick_2.png")
-				.catch((err) => {
-					errorHandler(err, msg)
-				});
+			.catch((err) => {
+				discordMessageErrorHandler(err,msg)
+			});
 		}
 
 		// function shows the ratings of all active players for MSC
@@ -482,7 +482,7 @@ async function messageManager(msg) {
 
 							msg.channel.send(newData.join('\n'))
 								.catch((err) => {
-									errorHandler(err, msg)
+									discordMessageErrorHandler(err, msg)
 
 								});
 						}
@@ -521,7 +521,7 @@ async function messageManager(msg) {
 
 							msg.channel.send(newData.join('\n'))
 								.catch((err) => {
-									errorHandler(err, msg)
+									discordMessageErrorHandler(err, msg)
 
 								});
 						}
@@ -542,7 +542,7 @@ async function messageManager(msg) {
 			if (msg.bot) return;
 			msg.channel.send("**MSL Season 1** — MSC Rankings")
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});;
 			axios.get(url3)
@@ -555,7 +555,7 @@ async function messageManager(msg) {
 					})
 					msg.channel.send(newData3.join('\n'))
 						.catch((err) => {
-							errorHandler(err, msg)
+							discordMessageErrorHandler(err, msg)
 
 						});
 					// I need this data here ^^
@@ -574,7 +574,7 @@ async function messageManager(msg) {
 			if (msg.bot) return;
 			msg.channel.send("**MSL Season 1** — SMS Rankings")
 				.catch((err) => {
-					errorHandler(err, msg)
+					discordMessageErrorHandler(err, msg)
 
 				});;
 			axios.get(url4)
@@ -587,7 +587,7 @@ async function messageManager(msg) {
 					})
 					msg.channel.send(newData4.join('\n'))
 						.catch((err) => {
-							errorHandler(err, msg)
+							discordMessageErrorHandler(err, msg)
 
 						});
 					// I need this data here ^^
@@ -803,14 +803,14 @@ async function messageManager(msg) {
 								if (!CONSTANTS.EXTERNAL_BOT_COMMANDS.includes(token[0])) {
 									msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
 										.catch((err) => {
-											errorHandler(err, msg);
+											discordMessageErrorHandler(err, msg);
 										});
 								}
 							}
 							else {
 								msg.channel.send(recordset.recordset[0].Response)
 									.catch((err) => {
-										errorHandler(err, msg)
+										discordMessageErrorHandler(err,msg)
 
 									});
 							}
@@ -827,15 +827,24 @@ async function messageManager(msg) {
 	}
 }
 
-const errorHandler = (err, msg) => {
+const discordMessageErrorHandler = (err, msg) => {
+	try {
+		channelId = err.path.split('/')[2];
+		client.channels.fetch(channelId).then(channel => {
+			errorHandler(err,msg,channel.name)
+		});
+	} catch {
+		errorHandler(err,msg,'unable to retrieve channel');
+	}
+}
+
+const errorHandler = (err,msg, location="internal") => {
 	msg.channel.send(`>>> Sorry, we got lost completing your request ${EMOJIS.mscwariodizzy}\n\nSupport for this bot can be reached through pinging *@Developer*`);
-	client.channels.fetch(err.path.split('/')[2]).then(channel => {
-		client.channels.cache.get(CONSTANTS.DEBUG_CHANNEL)
-			.send(`Error Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\nChannel: ${channel.name}\n\nStack Trace: ${err.stack}`)
+	client.channels.cache.get(CONSTANTS.DEBUG_CHANNEL)
+			.send(`Error Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\Location: ${location}\n\nStack Trace: ${err.stack}`)
 			.catch((err) => {
 				console.log(err)
 			});
-	})
 }
 
 //REACTION ROLES
