@@ -673,11 +673,22 @@ async function messageManager(msg) {
       if (msg.bot) return;
       try {
         // get the score and the discord ids if available
-				let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+				let p1 = client.users.cache.get(token[2].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
 
-        let p2 = client.users.cache.get(token[2].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
+        let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
 
-        let gametype = token[3];
+				// set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
+				if (p1 == undefined)
+					p1 = token[2];
+				else
+					p1 = token[2] + p1.username;
+
+				if (p2 == undefined)
+					p2 = token[3];
+				else
+					p2 = token[3] + p2.username;
+
+        let gametype = token[1];
         let tournament = token[4];
         let stage = token[5];
 
@@ -688,7 +699,7 @@ async function messageManager(msg) {
 					let query = "";
 
 					if (token.length == 6)
-						query = "exec reportScore @gametype, @p1, @p2, @score, '', @t, @s, 1;"
+						query = "exec reportScore @gametype, @p1, @p2, @score, null, @t, @s, 1;"
 					/*
 					else if (token.length == 5) {
 						query = "exec reportScoreSMS '" + p1 + "', '" + p2 + "', '" + score + "', '" + token[4] + "';"
