@@ -140,6 +140,10 @@ async function messageManager(msg) {
 			if (msg.bot)
 				return;
 
+      if (token.length == 2) {
+        
+      }
+
 			msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc")
 				.catch((err) => {
 					discordMessageErrorHandler(err, msg)
