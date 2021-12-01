@@ -473,18 +473,23 @@ async function messageManager(msg) {
 							errorHandler(err, msg)
 						}
 						else {
-							let data = recordset.recordset;
-							const newData = [];
-							for (let i = 0; i < recordset.recordset.length; i++) {
-								newData.push(recordset.recordset[i].line);
-								console.log(recordset.recordset[i].line);
+							const chunkSize = 20;
+							const chunkHolder = []
+							const numChunks = Math.floor(recordset.recordset.length / chunkSize);
+							for (let i = 0; i < numChunks; i++) {
+								chunk = recordset.recordset.slice(i*chunkSize,i+1 * chunkSize);
+								chunkHolder.push(chunk.map(x => x.line));
 							}
-
-							msg.channel.send(newData.join('\n'))
+							if (recordset.recordset.length % chunkSize !== 0){
+								chunk = recordset.recordset.slice(numChunks*chunkSize, recordset.recordset.length);
+								chunkHolder.push(chunk.map(x => x.line));
+							}
+							chunkHolder.forEach((chunk) => {
+								msg.channel.send(chunk.join('\n'))
 								.catch((err) => {
-									discordMessageErrorHandler(err, msg)
-
+									discordMessageErrorHandler(err,msg)
 								});
+							});
 						}
 					})
 				})
@@ -512,18 +517,23 @@ async function messageManager(msg) {
 							errorHandler(err, msg)
 						}
 						else {
-							let data = recordset.recordset;
-							const newData = [];
-							for (let i = 0; i < recordset.recordset.length; i++) {
-								newData.push(recordset.recordset[i].line);
-								console.log(recordset.recordset[i].line);
+							const chunkSize = 20;
+							const chunkHolder = []
+							const numChunks = Math.floor(recordset.recordset.length / chunkSize);
+							for (let i = 0; i < numChunks; i++) {
+								chunk = recordset.recordset.slice(i*chunkSize,i+1 * chunkSize);
+								chunkHolder.push(chunk.map(x => x.line));
 							}
-
-							msg.channel.send(newData.join('\n'))
+							if (recordset.recordset.length % chunkSize !== 0){
+								chunk = recordset.recordset.slice(numChunks*chunkSize, recordset.recordset.length);
+								chunkHolder.push(chunk.map(x => x.line));
+							}
+							chunkHolder.forEach((chunk) => {
+								msg.channel.send(chunk.join('\n'))
 								.catch((err) => {
-									discordMessageErrorHandler(err, msg)
-
+									discordMessageErrorHandler(err,msg)
 								});
+							});
 						}
 					})
 				})
