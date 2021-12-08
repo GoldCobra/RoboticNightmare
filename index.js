@@ -206,7 +206,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err, msg)
+				errorHandler(error, msg)
 			}
 		}
 
@@ -234,7 +234,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err, msg)
+				errorHandler(error, msg)
 			}
 		}
 
@@ -497,7 +497,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err, msg)
+				errorHandler(error, msg)
 			}
 		}
 
@@ -573,7 +573,7 @@ async function messageManager(msg) {
 				})
 				.catch(function (error) {
 					console.log(error);
-					errorHandler(err, msg)
+					errorHandler(error, msg)
 				});
 		}
 
@@ -605,7 +605,7 @@ async function messageManager(msg) {
 				})
 				.catch(function (error) {
 					console.log(error);
-					errorHandler(err, msg)
+					errorHandler(error, msg)
 				});
 		}
 
@@ -665,7 +665,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err, msg);
+				errorHandler(error, msg);
 			}
 		}
 
@@ -723,7 +723,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err, msg)
+				errorHandler(error, msg)
 			}
 		}
 
@@ -782,7 +782,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err, msg)
+				errorHandler(error, msg)
 			}
 		}
 
@@ -831,7 +831,7 @@ async function messageManager(msg) {
 			catch (error) {
 				console.log(error);
 				msg.react('❌');
-				errorHandler(err, msg)
+				errorHandler(error, msg)
 			}
 		}
 	}
