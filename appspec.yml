@@ -4,10 +4,6 @@ files:
   - source: .
     destination: /home/ec2-user/RoboticNightmare
 hooks:
-  BeforeInstall:
-    - location: scripts/install_dependencies.sh
-      timeout: 300
-      runas: ec2-user
   ApplicationStart:
     - location: scripts/start_server.sh
       timeout: 300
