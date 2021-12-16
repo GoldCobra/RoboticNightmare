@@ -153,12 +153,9 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 
-	if (msg.channel.id == process.env.TEST_CHANNEL_2) {
+	if (msg.channel.id) {
 		var token = msg.content.split(" ");
-
-		if (token[0] == "!userrole") {
-
-		}
+		
 		if (token[0] == "!roboedit") {
 			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
 				if (err) throw err;
