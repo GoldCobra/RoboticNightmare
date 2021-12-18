@@ -11,7 +11,7 @@ const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
 const { config } = require('./sql_config');
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -64,6 +64,41 @@ async function cronJob() {
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
 
+	// set All active players ranks as roles
+	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
+	let smsRatings = await getRatings(sms);
+	const smsRatingSplit = smsRatings.line.split('`');
+	const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
+	const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
+	guild.members.fetch({query:smsUser})
+	.then((user) => {
+		val = user.entries().next();
+		user = val.value[1];
+		user._roles.forEach(role => {
+			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+				user.roles.remove(role)
+			}
+		});
+	})
+
+	let mscRatings = await getRatings(msc);
+	const mscRatingsSplit = mscRatings.line.split('`');
+	const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
+	const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
+	guild.members.fetch({query:mscUser})
+	.then((user) => {
+		val = user.entries().next();
+		user = val.value[1];
+		user._roles.forEach(role => {
+			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+				user.roles.remove(role)
+			}
+		});
+		user.roles.add(CONSTANTS.ROLES[smsRole])
+		user.roles.add(CONSTANTS.ROLES[mscRole])
+
+	})
+
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
@@ -84,6 +119,35 @@ async function roleValidator(client, authorId, acceptedRoles) {
 	return validation
 }
 
+function getRatings(gametype) {
+	return new Promise((resolve, reject) => {
+		try {
+			sql.connect(config, function (err) {
+				var request = new sql.Request();
+	
+				let query = "exec GetRatingsForDiscord @gametype";
+				request.input('gametype', gametype);
+	
+				request.query(query, function (err, recordset) {
+					if (err) {
+						console.log(err);
+						msg.react('❌');
+					}
+					else {
+						resolve(recordset.recordset);
+					}
+			
+				})
+			});
+		} catch (error) {
+			errorHandler(err, msg)
+		}
+	})
+	
+}
+
+
+
 client.on("messageCreate", messageManager);
 
 async function messageManager(msg) {
@@ -91,7 +155,7 @@ async function messageManager(msg) {
 
 	if (msg.channel.id) {
 		var token = msg.content.split(" ");
-
+		
 		if (token[0] == "!roboedit") {
 			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
 				if (err) throw err;
@@ -459,73 +523,38 @@ async function messageManager(msg) {
 
 		// function shows the ratings of all active players for MSC
 		else if (token[0] == "!mscrating") {
-			try {
-				sql.connect(config, function (err) {
-					var request = new sql.Request();
-
-					let query = "exec GetRatingsForDiscord @gametype";
-					request.input('gametype', msc);
-
-					request.query(query, function (err, recordset) {
-						if (err) {
-							console.log(err);
-							msg.react('❌');
-							errorHandler(err, msg)
-						}
-						else {
-							const chunkSize = 20;
-							const chunkHolder = []
-							const numChunks = Math.floor(recordset.recordset.length / chunkSize);
-							for (let i = 0; i < numChunks; i++) {
-								chunk = recordset.recordset.slice(i*chunkSize,i+1 * chunkSize);
-								chunkHolder.push(chunk.map(x => x.line));
-							}
-							if (recordset.recordset.length % chunkSize !== 0){
-								chunk = recordset.recordset.slice(numChunks*chunkSize, recordset.recordset.length);
-								chunkHolder.push(chunk.map(x => x.line));
-							}
-							chunkHolder.forEach((chunk) => {
-								msg.channel.send(chunk.join('\n'))
-								.catch((err) => {
-									discordMessageErrorHandler(err,msg)
+								data = await getRatings(msc)
+								const chunkSize = 20;
+								const chunkHolder = []
+								const numChunks = Math.floor(data.length / chunkSize);
+								for (let i = 0; i < numChunks; i++) {
+									chunk = data.slice(i*chunkSize,i+1 * chunkSize);
+									chunkHolder.push(chunk.map(x => x.line));
+								}
+								if (data.length % chunkSize !== 0){
+									chunk = data.slice(numChunks*chunkSize, data.length);
+									chunkHolder.push(chunk.map(x => x.line));
+								}
+								chunkHolder.forEach((chunk) => {
+									msg.channel.send(chunk.join('\n'))
+									.catch((err) => {
+										discordMessageErrorHandler(err,msg)
+									});
 								});
-							});
-						}
-					})
-				})
-			}
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
-				errorHandler(error, msg)
-			}
 		}
 
 		// function shows the ratings of all active players for SMS
 		else if (token[0] == "!smsrating") {
-			try {
-				sql.connect(config, function (err) {
-					var request = new sql.Request();
-
-					let query = "exec GetRatingsForDiscord @gametype";
-					request.input('gametype', sms);
-
-					request.query(query, function (err, recordset) {
-						if (err) {
-							console.log(err);
-							msg.react('❌');
-							errorHandler(err, msg)
-						}
-						else {
+							const data = await getRatings(sms)
 							const chunkSize = 20;
 							const chunkHolder = []
-							const numChunks = Math.floor(recordset.recordset.length / chunkSize);
+							const numChunks = Math.floor(data.length / chunkSize);
 							for (let i = 0; i < numChunks; i++) {
-								chunk = recordset.recordset.slice(i*chunkSize,i+1 * chunkSize);
+								chunk = data.slice(i*chunkSize,i+1 * chunkSize);
 								chunkHolder.push(chunk.map(x => x.line));
 							}
-							if (recordset.recordset.length % chunkSize !== 0){
-								chunk = recordset.recordset.slice(numChunks*chunkSize, recordset.recordset.length);
+							if (data.length % chunkSize !== 0){
+								chunk = data.slice(numChunks*chunkSize, data.length);
 								chunkHolder.push(chunk.map(x => x.line));
 							}
 							chunkHolder.forEach((chunk) => {
@@ -534,15 +563,6 @@ async function messageManager(msg) {
 									discordMessageErrorHandler(err,msg)
 								});
 							});
-						}
-					})
-				})
-			}
-			catch (error) {
-				console.log(error);
-				msg.react('❌');
-				errorHandler(err, msg)
-			}
 		}
 
 		// function shows the current MSL Rankings for MSC
