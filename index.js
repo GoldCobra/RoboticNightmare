@@ -119,6 +119,7 @@ async function roleValidator(client, authorId, acceptedRoles) {
 	return validation
 }
 
+//Gets Ratings for Active Players
 function getRatings(gametype) {
 	return new Promise((resolve, reject) => {
 		try {
