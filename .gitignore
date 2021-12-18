@@ -1,7 +1,7 @@
 node_modules/
 .env
 npm-debug.log
-
+*.pem
 /.vs/slnx.sqlite
 /.vs/ProjectSettings.json
 /.vs/RoboticNightmare/v16/.suo
