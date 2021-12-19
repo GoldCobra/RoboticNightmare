@@ -66,7 +66,12 @@ async function cronJob() {
 
 	// set All active players ranks as roles
 	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
-	let smsRatings = await getRatings(sms);
+	let smsRatings = [];
+	try{
+		smsRatings = await getRatings(sms);
+	} catch(err) {
+		console.log(err)
+	}
 	smsRatings.forEach(rating => {
 		const smsRatingSplit = rating.line.split('`');
 		const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
@@ -89,7 +94,12 @@ async function cronJob() {
 			}
 		})
 	});
-	let mscRatings = await getRatings(msc);
+	let mscRatings = [];
+	try {
+		mscRatings = await getRatings(msc);
+	} catch (err) {
+		console.log(err)
+	}
 	mscRatings.forEach(rating => {
 		const mscRatingsSplit = rating.line.split('`');
 		const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
@@ -145,7 +155,7 @@ function getRatings(gametype) {
 				request.query(query, function (err, recordset) {
 					if (err) {
 						console.log(err);
-						msg.react('❌');
+						throw(err)
 					}
 					else {
 						resolve(recordset.recordset);
@@ -154,7 +164,7 @@ function getRatings(gametype) {
 				})
 			});
 		} catch (error) {
-			errorHandler(err, msg)
+			throw(error)
 		}
 	})
 	
