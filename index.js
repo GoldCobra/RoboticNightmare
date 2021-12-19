@@ -67,38 +67,51 @@ async function cronJob() {
 	// set All active players ranks as roles
 	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
 	let smsRatings = await getRatings(sms);
-	const smsRatingSplit = smsRatings.line.split('`');
-	const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
-	const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
-	guild.members.fetch({query:smsUser})
-	.then((user) => {
-		val = user.entries().next();
-		user = val.value[1];
-		user._roles.forEach(role => {
-			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-				user.roles.remove(role)
+	smsRatings.forEach(rating => {
+		const smsRatingSplit = rating.line.split('`');
+		const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
+		const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
+		guild.members.fetch({query:smsUser})
+		.then((user) => {
+			if (user) {
+				try {
+					val = user.entries().next();
+					user = val.value[1];
+					user._roles.forEach(role => {
+						if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+							user.roles.remove(role)
+						}
+					});
+					user.roles.add(CONSTANTS.ROLES[smsRole])
+				} catch(err) {
+					console.log("User doesn't exist");
+				}
 			}
-		});
-	})
-
+		})
+	});
 	let mscRatings = await getRatings(msc);
-	const mscRatingsSplit = mscRatings.line.split('`');
-	const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
-	const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
-	guild.members.fetch({query:mscUser})
-	.then((user) => {
-		val = user.entries().next();
-		user = val.value[1];
-		user._roles.forEach(role => {
-			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-				user.roles.remove(role)
+	mscRatings.forEach(rating => {
+		const mscRatingsSplit = rating.line.split('`');
+		const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
+		const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
+		guild.members.fetch({query:mscUser})
+		.then((user) => {
+			if (user) {
+				try {
+					val = user.entries().next();
+					user = val.value[1];
+					user._roles.forEach(role => {
+						if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+							user.roles.remove(role)
+						}
+					});
+					user.roles.add(CONSTANTS.ROLES[mscRole])
+				} catch(err) {
+					console.log("User doesn't exist")
+				}
 			}
-		});
-		user.roles.add(CONSTANTS.ROLES[smsRole])
-		user.roles.add(CONSTANTS.ROLES[mscRole])
-
-	})
-
+		})
+	});
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
