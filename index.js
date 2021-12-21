@@ -547,6 +547,7 @@ async function messageManager(msg) {
 
 		// function shows the ratings of all active players for MSC
 		else if (token[0] == "!mscrating") {
+							try{
 								data = await getRatings(msc)
 								const chunkSize = 20;
 								const chunkHolder = []
@@ -565,10 +566,14 @@ async function messageManager(msg) {
 										discordMessageErrorHandler(err,msg)
 									});
 								});
+							} catch (err) {
+								errorHandler(err,msg)
+							}
 		}
 
 		// function shows the ratings of all active players for SMS
 		else if (token[0] == "!smsrating") {
+						try{
 							const data = await getRatings(sms)
 							const chunkSize = 20;
 							const chunkHolder = []
@@ -587,6 +592,9 @@ async function messageManager(msg) {
 									discordMessageErrorHandler(err,msg)
 								});
 							});
+						} catch(err) {
+							errorHandler(err,msg)
+						}
 		}
 
 		// function shows the current MSL Rankings for MSC
