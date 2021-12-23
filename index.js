@@ -186,58 +186,58 @@ client.on("messageCreate", messageManager);
 
 async function messageManager(msg) {
 	if (msg.author.bot) return
-	if (editMessageObj.currentAuth.length > 0) {
-		if(editMessageObj.currentAuth == msg.author.id && msg.channel.id == editMessageObj.originChanneloriginChannel.id){
-			if (msg.content == "!closeedit") {
-				editMessageObj = {
-					awaitingMessageID: false,
-					awaitingChannelID: false,
-					awaitingMessageText: false,
-					currentAuth: '',
-					originChannel: '',
-					editMessageID: '',
-					editChannelID: ''
-				}
-				msg.channel.send('Editing session succesfully closed')
-				.catch(err => {
-					discordMessageErrorHandler(err,msg);
-				})
-			}
-			else if (editMessageObj.awaitingChannelID ) {
-					msg.channel.send('Please enter message ID')
-					.catch((err) => {
-						discordMessageErrorHandler(err, msg);
-					});
-					editMessageObj.awaitingChannelID = false;
-					editMessageObj.awaitingMessageID = true;
-					editMessageObj.editChannelID = msg.content;
-			}
-			else if (editMessageObj.awaitingMessageID) {
-					msg.channel.send('Please enter new message text')
-					.catch((err) => {
-						discordMessageErrorHandler(err,msg);
-					});
-					editMessageObj.awaitingMessageID = false;
-					editMessageObj.awaitingMessageText = true;
-					editMessageObj.editMessageID = msg.content
-			} else if (editMessageObj.awaitingMessageText) {
-					editMessageObj.awaitingMessageText = false;
-					editMessageObj.currentAuth = '';
-					msg.guild.channels.fetch(editMessageObj.editChannelID)
-					.then(channel => {
-						channel.messages.fetch(editMessageObj.editMessageID)
-						.then(message => {
-							message.edit(msg.content);
-						});
-					});
-				}
-		}
-	}
 
 	if (msg.channel.id) {
 		var token = msg.content.split(" ");
-		
-		if (token[0] == "!roboedit") {
+		if (editMessageObj.currentAuth.length > 0) {
+			if(editMessageObj.currentAuth == msg.author.id && msg.channel.id == editMessageObj.originChannel.id){
+				if (msg.content == "!closeedit") {
+					editMessageObj = {
+						awaitingMessageID: false,
+						awaitingChannelID: false,
+						awaitingMessageText: false,
+						currentAuth: '',
+						originChannel: '',
+						editMessageID: '',
+						editChannelID: ''
+					}
+					msg.channel.send('Editing session succesfully closed')
+					.catch(err => {
+						discordMessageErrorHandler(err,msg);
+					})
+				}
+				else if (editMessageObj.awaitingChannelID ) {
+						msg.channel.send('Please enter message ID')
+						.catch((err) => {
+							discordMessageErrorHandler(err, msg);
+						});
+						editMessageObj.awaitingChannelID = false;
+						editMessageObj.awaitingMessageID = true;
+						editMessageObj.editChannelID = msg.content;
+				}
+				else if (editMessageObj.awaitingMessageID) {
+						msg.channel.send('Please enter new message text')
+						.catch((err) => {
+							discordMessageErrorHandler(err,msg);
+						});
+						editMessageObj.awaitingMessageID = false;
+						editMessageObj.awaitingMessageText = true;
+						editMessageObj.editMessageID = msg.content
+				} else if (editMessageObj.awaitingMessageText) {
+						editMessageObj.awaitingMessageText = false;
+						editMessageObj.currentAuth = '';
+						msg.guild.channels.fetch(editMessageObj.editChannelID)
+						.then(channel => {
+							channel.messages.fetch(editMessageObj.editMessageID)
+							.then(message => {
+								message.edit(msg.content);
+							});
+						});
+					}
+			}
+		}
+	
+		else if (token[0] == "!roboedit") {
 			if (editMessageObj.currentAuth.length > 0) {
 				msg.channel.send('Another user has an editing session open, to close use the command *!closeedit*')
 				.catch((err) => {
