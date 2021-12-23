@@ -6,12 +6,22 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const msc = 1;
 const sms = 2;
+let editMessageObj = {
+	awaitingMessageID: false,
+	awaitingChannelID: false,
+	awaitingMessageText: false,
+	currentAuth: '',
+	originChannel: '',
+	editMessageID: '',
+	editChannelID: ''
+}
+
 
 const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
 const { config } = require('./sql_config');
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -57,7 +67,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 
-client.on("ready", cronJob);
+client.on("ready", () => {});
 
 async function cronJob() {
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
@@ -176,22 +186,96 @@ client.on("messageCreate", messageManager);
 
 async function messageManager(msg) {
 	if (msg.author.bot) return
+	console.log(editMessageObj)
+	if (editMessageObj.currentAuth.length > 0) {
+		if(editMessageObj.currentAuth == msg.author.id && msg.channel.id == editMessageObj.originChanneloriginChannel.id){
+			if (msg.content == "!closeedit") {
+				editMessageObj = {
+					awaitingMessageID: false,
+					awaitingChannelID: false,
+					awaitingMessageText: false,
+					currentAuth: '',
+					originChannel: '',
+					editMessageID: '',
+					editChannelID: ''
+				}
+				msg.channel.send('Editing session succesfully closed')
+				.catch(err => {
+					discordMessageErrorHandler(err,msg);
+				})
+			}
+			else if (editMessageObj.awaitingChannelID ) {
+					msg.channel.send('Please enter message ID')
+					.catch((err) => {
+						discordMessageErrorHandler(err, msg);
+					});
+					editMessageObj.awaitingChannelID = false;
+					editMessageObj.awaitingMessageID = true;
+					editMessageObj.editChannelID = msg.content;
+			}
+			else if (editMessageObj.awaitingMessageID) {
+					msg.channel.send('Please enter new message text')
+					.catch((err) => {
+						discordMessageErrorHandler(err,msg);
+					});
+					editMessageObj.awaitingMessageID = false;
+					editMessageObj.awaitingMessageText = true;
+					editMessageObj.editMessageID = msg.content
+			} else if (editMessageObj.awaitingMessageText) {
+					editMessageObj.awaitingMessageText = false;
+					editMessageObj.currentAuth = '';
+					msg.guild.channels.fetch(editMessageObj.editChannelID)
+					.then(channel => {
+						channel.messages.fetch(editMessageObj.editMessageID)
+						.then(message => {
+							message.edit(msg.content);
+						});
+					});
+				}
+		}
+	}
 
 	if (msg.channel.id) {
 		var token = msg.content.split(" ");
 		
 		if (token[0] == "!roboedit") {
-			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
-				if (err) throw err;
-
-				msg.channel.messages.fetch(
-					//in around put the ID of the message which you want to edit//
-					{ around: "896366421771182112", limit: 1 })
-					.then(msg => {
-						const fetchedMsg = msg.first();
-						fetchedMsg.edit(data);
-					});
-			});
+			if (editMessageObj.currentAuth.length > 0) {
+				msg.channel.send('Another user has an editing session open, to close use the command *!closeedit*')
+				.catch((err) => {
+					discordMessageErrorHandler(err,msg)
+				})
+		}else {
+				msg.channel.send('Please enter channel ID');
+				editMessageObj.awaitingChannelID = true
+				editMessageObj.currentAuth = msg.author.id
+				editMessageObj.originChannel = msg.channel
+			}
+		}
+		else if (token[0] == "!closeedit") {
+			if(editMessageObj.currentAuth.length > 0) {
+				editMessageObj.originChannel.send(`<@${msg.author.id}> has closed an editing session started by <@${editMessageObj.currentAuth}> in this channel.`)
+				.catch(err => {
+					discordMessageErrorHandler(err,msg);
+				})
+				editMessageObj = {
+					awaitingMessageID: false,
+					awaitingChannelID: false,
+					awaitingMessageText: false,
+					currentAuth: '',
+					originChannel: '',
+					editMessageID: '',
+					editChannelID: ''
+				}
+				msg.channel.send('Session succesfully closed')
+				.catch(err => {
+					discordMessageErrorHandler(err,msg);
+				});
+			} else {
+				msg.channel.send('There are no open editing sessions. You can start one using *!roboedit*')
+				.catch(err => {
+					discordMessageErrorHandler(err,msg)
+				})
+			}
 		}
 
 		else if (token[0] == "!robosend") {
