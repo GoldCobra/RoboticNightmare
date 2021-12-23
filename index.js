@@ -21,7 +21,7 @@ const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
 const { config } = require('./sql_config');
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -67,7 +67,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 
-client.on("ready", () => {});
+client.on("ready", cronJob);
 
 async function cronJob() {
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
@@ -186,7 +186,6 @@ client.on("messageCreate", messageManager);
 
 async function messageManager(msg) {
 	if (msg.author.bot) return
-	console.log(editMessageObj)
 	if (editMessageObj.currentAuth.length > 0) {
 		if(editMessageObj.currentAuth == msg.author.id && msg.channel.id == editMessageObj.originChanneloriginChannel.id){
 			if (msg.content == "!closeedit") {
