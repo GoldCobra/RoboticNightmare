@@ -76,62 +76,35 @@ async function cronJob() {
 
 	// set All active players ranks as roles
 	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
-	let smsRatings = [];
-	try{
-		smsRatings = await getRatings(sms);
-	} catch(err) {
-		console.log(err)
-	}
-	smsRatings.forEach(rating => {
-		const smsRatingSplit = rating.line.split('`');
-		const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
-		const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
-		guild.members.fetch({query:smsUser})
-		.then((user) => {
-			if (user) {
-				try {
-					val = user.entries().next();
-					user = val.value[1];
-					user._roles.forEach(role => {
-						if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-							user.roles.remove(role)
-						}
-					});
-					user.roles.add(CONSTANTS.ROLES[smsRole])
-				} catch(err) {
-					console.log("User doesn't exist");
-				}
-			}
-		})
-	});
-	let mscRatings = [];
-	try {
-		mscRatings = await getRatings(msc);
-	} catch (err) {
-		console.log(err)
-	}
-	mscRatings.forEach(rating => {
-		const mscRatingsSplit = rating.line.split('`');
-		const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
-		const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
-		guild.members.fetch({query:mscUser})
-		.then((user) => {
-			if (user) {
-				try {
-					val = user.entries().next();
-					user = val.value[1];
-					user._roles.forEach(role => {
-						if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-							user.roles.remove(role)
-						}
-					});
-					user.roles.add(CONSTANTS.ROLES[mscRole])
-				} catch(err) {
-					console.log("User doesn't exist")
-				}
-			}
-		})
-	});
+	let ratings = [];
+  try {
+    ratings = await getRankRolesPerUser();
+  }
+  catch (err) {
+    console.log(err);
+  }
+
+  ratings.forEach(rating => {
+    const playerRole = rating.RoleID;
+    const playerID = rating.UserID;
+
+    guild.members.fetch(playerID)
+      .then((user) => {
+        if (user) {
+          try {
+            user._roles.forEach(role => {
+              if (CONSTANTS.PLAYER_ROLES.includes(role) && role != playerRole) {
+                user.roles.remove(role)
+              }
+            });
+            user.roles.add(playerRole);
+          }
+          catch (err) {
+            console.log("User doesn't exist");
+          }
+        }
+      })
+  });
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
@@ -177,10 +150,32 @@ function getRatings(gametype) {
 			throw(error)
 		}
 	})
-	
 }
 
+function getRankRolesPerUser() {
+	return new Promise((resolve, reject) => {
+		try {
+			sql.connect(config, function (err) {
+				var request = new sql.Request();
 
+				let query = "exec GetDiscordRankRolesByUserID";
+
+				request.query(query, function (err, recordset) {
+					if (err) {
+						console.log(err);
+						msg.react('❌');
+					}
+					else {
+						resolve(recordset.recordset);
+					}
+
+				})
+			});
+		} catch (error) {
+			errorHandler(err, msg)
+		}
+	})
+}
 
 client.on("messageCreate", messageManager);
 
