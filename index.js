@@ -880,11 +880,15 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	if (reaction.message.id == "896450856298381312") {
 		const role1 = "862237914863239198";
 		const role2 = "680810288605298744";
+    const role7 = "915981506898460742";
 		if (reaction.emoji.name == '✅') {
 			member.roles.add(role1);
 		}
 		if (reaction.emoji.id == '712278814163730452') {
 			member.roles.add(role2);
+		}
+    if (reaction.emoji.id == '890249419495211068') {
+			member.roles.add(role7);
 		}
 	}
 
@@ -923,6 +927,10 @@ client.on("messageReactionRemove", (reaction, user) => {
 		if (reaction.emoji.id == '712278814163730452') {
 			console.log("mscball reaction removed")
 			member.roles.remove("680810288605298744");
+		}
+    if (reaction.emoji.id == '890249419495211068') {
+			console.log("dolphinemu reaction removed")
+			member.roles.remove("915981506898460742");
 		}
 	}
 
