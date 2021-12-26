@@ -64,40 +64,7 @@ async function cronJob() {
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
 
-	// set All active players ranks as roles
-	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
-	let smsRatings = await getRatings(sms);
-	const smsRatingSplit = smsRatings.line.split('`');
-	const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
-	const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
-	guild.members.fetch({query:smsUser})
-	.then((user) => {
-		val = user.entries().next();
-		user = val.value[1];
-		user._roles.forEach(role => {
-			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-				user.roles.remove(role)
-			}
-		});
-	})
-
-	let mscRatings = await getRatings(msc);
-	const mscRatingsSplit = mscRatings.line.split('`');
-	const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
-	const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
-	guild.members.fetch({query:mscUser})
-	.then((user) => {
-		val = user.entries().next();
-		user = val.value[1];
-		user._roles.forEach(role => {
-			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-				user.roles.remove(role)
-			}
-		});
-		user.roles.add(CONSTANTS.ROLES[smsRole])
-		user.roles.add(CONSTANTS.ROLES[mscRole])
-
-	})
+	
 
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
@@ -146,6 +113,31 @@ function getRatings(gametype) {
 	
 }
 
+function getRankRolesPerUser() {
+	return new Promise((resolve, reject) => {
+		try {
+			sql.connect(config, function (err) {
+				var request = new sql.Request();
+	
+				let query = "exec GetDiscordRankRolesByUserID";
+	
+				request.query(query, function (err, recordset) {
+					if (err) {
+						console.log(err);
+						msg.react('❌');
+					}
+					else {
+						resolve(recordset.recordset);
+					}
+			
+				})
+			});
+		} catch (error) {
+			errorHandler(err, msg)
+		}
+	})
+}
+
 
 
 client.on("messageCreate", messageManager);
@@ -155,7 +147,77 @@ async function messageManager(msg) {
 
 	if (msg.channel.id) {
 		var token = msg.content.split(" ");
-		
+    if (token[0] == "!dotheroles") {
+      msg.reply("on it!");
+      // set All active players ranks as roles
+      const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
+      let ratings = [];
+      try {
+        ratings = await getRankRolesPerUser();
+      }
+      catch (err) {
+        console.log(err);
+      }
+
+      ratings.forEach(rating => {
+        const playerRole = rating.RoleID;
+        const playerID = rating.UserID;
+
+        guild.members.fetch(playerID)
+        .then((user) => {
+          if (user) {
+            try {
+              user._roles.forEach(role => {
+                if (CONSTANTS.PLAYER_ROLES.includes(role) && role != playerRole) {
+                  user.roles.remove(role)
+                }
+              });
+              user.roles.add(playerRole);
+            }
+            catch (err) {
+              console.log("User doesn't exist");
+            }
+          }
+        })
+      });
+
+      /*
+      const ratingSplit = console.log(rankRoles[0].line);
+
+      console.log(ratingSplit);
+      const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
+      const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
+      guild.members.fetch({query:smsUser})
+      .then((user) => {
+        val = user.entries().next();
+        user = val.value[1];
+        user._roles.forEach(role => {
+          if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+            user.roles.remove(role)
+          }
+        });
+      })
+
+      let mscRatings = await getRatings(msc);
+      const mscRatingsSplit = mscRatings.line.split('`');
+      const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
+      const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
+      guild.members.fetch({query:mscUser})
+      .then((user) => {
+        val = user.entries().next();
+        user = val.value[1];
+        user._roles.forEach(role => {
+          if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+            user.roles.remove(role)
+          }
+        });
+        user.roles.add(CONSTANTS.ROLES[smsRole])
+        user.roles.add(CONSTANTS.ROLES[mscRole])
+
+      })
+      */
+    }
+		/*
 		if (token[0] == "!roboedit") {
 			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
 				if (err) throw err;
@@ -853,7 +915,7 @@ async function messageManager(msg) {
 				msg.react('❌');
 				errorHandler(error, msg)
 			}
-		}
+    } */
 	}
 }
 
