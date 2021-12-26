@@ -6,6 +6,16 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const msc = 1;
 const sms = 2;
+let editMessageObj = {
+	awaitingMessageID: false,
+	awaitingChannelID: false,
+	awaitingMessageText: false,
+	currentAuth: '',
+	originChannel: '',
+	editMessageID: '',
+	editChannelID: ''
+}
+
 
 const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
@@ -66,39 +76,62 @@ async function cronJob() {
 
 	// set All active players ranks as roles
 	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
-	let smsRatings = await getRatings(sms);
-	const smsRatingSplit = smsRatings.line.split('`');
-	const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
-	const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
-	guild.members.fetch({query:smsUser})
-	.then((user) => {
-		val = user.entries().next();
-		user = val.value[1];
-		user._roles.forEach(role => {
-			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-				user.roles.remove(role)
+	let smsRatings = [];
+	try{
+		smsRatings = await getRatings(sms);
+	} catch(err) {
+		console.log(err)
+	}
+	smsRatings.forEach(rating => {
+		const smsRatingSplit = rating.line.split('`');
+		const smsRole = smsRatingSplit[0].trim().split(':')[1].toUpperCase();
+		const smsUser = smsRatingSplit[1].match(/\w+/g)[0]
+		guild.members.fetch({query:smsUser})
+		.then((user) => {
+			if (user) {
+				try {
+					val = user.entries().next();
+					user = val.value[1];
+					user._roles.forEach(role => {
+						if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+							user.roles.remove(role)
+						}
+					});
+					user.roles.add(CONSTANTS.ROLES[smsRole])
+				} catch(err) {
+					console.log("User doesn't exist");
+				}
 			}
-		});
-	})
-
-	let mscRatings = await getRatings(msc);
-	const mscRatingsSplit = mscRatings.line.split('`');
-	const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
-	const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
-	guild.members.fetch({query:mscUser})
-	.then((user) => {
-		val = user.entries().next();
-		user = val.value[1];
-		user._roles.forEach(role => {
-			if (CONSTANTS.PLAYER_ROLES.includes(role)) {
-				user.roles.remove(role)
+		})
+	});
+	let mscRatings = [];
+	try {
+		mscRatings = await getRatings(msc);
+	} catch (err) {
+		console.log(err)
+	}
+	mscRatings.forEach(rating => {
+		const mscRatingsSplit = rating.line.split('`');
+		const mscRole = mscRatingsSplit[0].trim().split(':')[1].toUpperCase();
+		const mscUser = mscRatingsSplit[1].match(/\w+/g)[0]
+		guild.members.fetch({query:mscUser})
+		.then((user) => {
+			if (user) {
+				try {
+					val = user.entries().next();
+					user = val.value[1];
+					user._roles.forEach(role => {
+						if (CONSTANTS.PLAYER_ROLES.includes(role)) {
+							user.roles.remove(role)
+						}
+					});
+					user.roles.add(CONSTANTS.ROLES[mscRole])
+				} catch(err) {
+					console.log("User doesn't exist")
+				}
 			}
-		});
-		user.roles.add(CONSTANTS.ROLES[smsRole])
-		user.roles.add(CONSTANTS.ROLES[mscRole])
-
-	})
-
+		})
+	});
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
@@ -119,6 +152,7 @@ async function roleValidator(client, authorId, acceptedRoles) {
 	return validation
 }
 
+//Gets Ratings for Active Players
 function getRatings(gametype) {
 	return new Promise((resolve, reject) => {
 		try {
@@ -131,7 +165,7 @@ function getRatings(gametype) {
 				request.query(query, function (err, recordset) {
 					if (err) {
 						console.log(err);
-						msg.react('❌');
+						throw(err)
 					}
 					else {
 						resolve(recordset.recordset);
@@ -140,7 +174,7 @@ function getRatings(gametype) {
 				})
 			});
 		} catch (error) {
-			errorHandler(err, msg)
+			throw(error)
 		}
 	})
 	
@@ -155,19 +189,92 @@ async function messageManager(msg) {
 
 	if (msg.channel.id) {
 		var token = msg.content.split(" ");
-		
-		if (token[0] == "!roboedit") {
-			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
-				if (err) throw err;
-
-				msg.channel.messages.fetch(
-					//in around put the ID of the message which you want to edit//
-					{ around: "896366421771182112", limit: 1 })
-					.then(msg => {
-						const fetchedMsg = msg.first();
-						fetchedMsg.edit(data);
-					});
-			});
+		if (editMessageObj.currentAuth.length > 0) {
+			if(editMessageObj.currentAuth == msg.author.id && msg.channel.id == editMessageObj.originChannel.id){
+				if (msg.content == "!closeedit") {
+					editMessageObj = {
+						awaitingMessageID: false,
+						awaitingChannelID: false,
+						awaitingMessageText: false,
+						currentAuth: '',
+						originChannel: '',
+						editMessageID: '',
+						editChannelID: ''
+					}
+					msg.channel.send('Editing session succesfully closed')
+					.catch(err => {
+						discordMessageErrorHandler(err,msg);
+					})
+				}
+				else if (editMessageObj.awaitingChannelID ) {
+						msg.channel.send('Please enter message ID')
+						.catch((err) => {
+							discordMessageErrorHandler(err, msg);
+						});
+						editMessageObj.awaitingChannelID = false;
+						editMessageObj.awaitingMessageID = true;
+						editMessageObj.editChannelID = msg.content;
+				}
+				else if (editMessageObj.awaitingMessageID) {
+						msg.channel.send('Please enter new message text')
+						.catch((err) => {
+							discordMessageErrorHandler(err,msg);
+						});
+						editMessageObj.awaitingMessageID = false;
+						editMessageObj.awaitingMessageText = true;
+						editMessageObj.editMessageID = msg.content
+				} else if (editMessageObj.awaitingMessageText) {
+						editMessageObj.awaitingMessageText = false;
+						editMessageObj.currentAuth = '';
+						msg.guild.channels.fetch(editMessageObj.editChannelID)
+						.then(channel => {
+							channel.messages.fetch(editMessageObj.editMessageID)
+							.then(message => {
+								message.edit(msg.content);
+							});
+						});
+					}
+			}
+		}
+	
+		else if (token[0] == "!roboedit") {
+			if (editMessageObj.currentAuth.length > 0) {
+				msg.channel.send('Another user has an editing session open, to close use the command *!closeedit*')
+				.catch((err) => {
+					discordMessageErrorHandler(err,msg)
+				})
+		}else {
+				msg.channel.send('Please enter channel ID');
+				editMessageObj.awaitingChannelID = true
+				editMessageObj.currentAuth = msg.author.id
+				editMessageObj.originChannel = msg.channel
+			}
+		}
+		else if (token[0] == "!closeedit") {
+			if(editMessageObj.currentAuth.length > 0) {
+				editMessageObj.originChannel.send(`<@${msg.author.id}> has closed an editing session started by <@${editMessageObj.currentAuth}> in this channel.`)
+				.catch(err => {
+					discordMessageErrorHandler(err,msg);
+				})
+				editMessageObj = {
+					awaitingMessageID: false,
+					awaitingChannelID: false,
+					awaitingMessageText: false,
+					currentAuth: '',
+					originChannel: '',
+					editMessageID: '',
+					editChannelID: ''
+				}
+				msg.channel.send('Session succesfully closed')
+				.catch(err => {
+					discordMessageErrorHandler(err,msg);
+				});
+			} else {
+				msg.channel.send('There are no open editing sessions. You can start one using *!roboedit*')
+				.catch(err => {
+					discordMessageErrorHandler(err,msg)
+				})
+			}
 		}
 
 		else if (token[0] == "!robosend") {
@@ -523,6 +630,7 @@ async function messageManager(msg) {
 
 		// function shows the ratings of all active players for MSC
 		else if (token[0] == "!mscrating") {
+							try{
 								data = await getRatings(msc)
 								const chunkSize = 20;
 								const chunkHolder = []
@@ -541,10 +649,14 @@ async function messageManager(msg) {
 										discordMessageErrorHandler(err,msg)
 									});
 								});
+							} catch (err) {
+								errorHandler(err,msg)
+							}
 		}
 
 		// function shows the ratings of all active players for SMS
 		else if (token[0] == "!smsrating") {
+						try{
 							const data = await getRatings(sms)
 							const chunkSize = 20;
 							const chunkHolder = []
@@ -563,6 +675,9 @@ async function messageManager(msg) {
 									discordMessageErrorHandler(err,msg)
 								});
 							});
+						} catch(err) {
+							errorHandler(err,msg)
+						}
 		}
 
 		// function shows the current MSL Rankings for MSC
