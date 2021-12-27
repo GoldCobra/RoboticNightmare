@@ -271,7 +271,12 @@ async function messageManager(msg) {
 				})
 			}
 		}
-
+		else if (token[0] == "!piedwishes") {
+			msg.channel.send("Pied wishes he was as good as me")
+			.catch(err => {
+				discordMessageErrorHandler(err,msg);
+			});
+		}
 		else if (token[0] == "!robosend") {
 			fs.readFile('msg_send.txt', 'utf8', function (err, data) {
 				if (err) throw err;
