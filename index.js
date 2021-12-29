@@ -324,7 +324,7 @@ async function messageManager(msg) {
 			if (msg.bot)
 				return;
 
-			msg.author.send("Below is a link to Super Mario Strikers NTSC ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/7EhEDbAA#IEU4D3RFWZbNAfgR8uX4o5a4VPplgSDoKW4BRkm7ol0")
+			msg.author.send("Below is a link to Super Mario Strikers NTSC ISO. Please do not share this link with anyone else!\n\nhttp://e.pc.cd/sB1otalK")
 				.catch((err) => {
 					discordMessageErrorHandler(err, msg)
 
