@@ -978,8 +978,54 @@ async function messageManager(msg) {
 		if (token[0] == "!q") {
 			// if the channel is #ranked-msc or #ranked-sms then
       if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL || msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
+        try {
+					sql.connect(config, function (err) {
+						var request = new sql.Request();
+            
+            let query = "exec QueueRanked @GameType, @Player";
+						request.input("GameType", 1); // todo - figure out gametype from channel
+            request.input("Player", "<@!" + msg.author.id + ">" + msg.author.username);
+
+						request.query(query, function (err, recordset) {
+							if (err) {
+								console.log(err);
+								msg.react('❌');
+								errorHandler(err, msg);
+							}
+							else {
+								let data = recordset.recordset;
+								if (recordset.recordset.length == 0) {
+									if (!CONSTANTS.EXTERNAL_BOT_COMMANDS.includes(token[0])) {
+										msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
+											.catch((err) => {
+												discordMessageErrorHandler(err, msg);
+											});
+									}
+								}
+								else {
+                  /*
+									msg.channel.send(recordset.recordset[0].Response)
+										.catch((err) => {
+											discordMessageErrorHandler(err, msg)
+
+										});
+                    */
+								}
+							}
+						})
+					})
+				}
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+					errorHandler(error, msg)
+				}
+
+        msg.reply("ID: " + msg.author.id);
+        msg.reply("Name: " + msg.author.username);
+
         let thread = await msg.channel.threads.create({
-          name: 'Ranked Match 1234 - Rocci v GoldCobra',
+          name: 'Ranked Match 1234 - Rocci v RocciTest',
           autoArchiveDuration: 60,
           reason: '1234'
         });
