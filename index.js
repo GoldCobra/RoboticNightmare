@@ -977,11 +977,11 @@ async function messageManager(msg) {
     var token = msg.content.split(" ");
 		if (token[0] == "!q") {
 			// if the channel is #ranked-msc or #ranked-sms then
-      if (true) {
+      if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL || msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
         let thread = await msg.channel.threads.create({
           name: 'Ranked Match 1234 - Rocci v GoldCobra',
           autoArchiveDuration: 60,
-          reason: 'This is a ranked match - Rocci v GoldCobra'
+          reason: '1234'
         });
         await thread.members.add('321320322051866654');
         await thread.members.add('897530390229680129');
@@ -994,10 +994,14 @@ async function messageManager(msg) {
         awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
         awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
         
+        thread.send(thread.id); // use this as the unique identier in the database
         // stored procedure to add the user to the queue
         // if the stored proc returns a user then the queue pops, randomly determine home/away
         // otherwise
 
+      }
+      else {
+        msg.reply("You must start a ranked match from <#" + CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL + "> or <#" + CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL + ">, not here.");
       }
 		}
 	}
@@ -1109,6 +1113,8 @@ client.on("messageReactionRemove", (reaction, user) => {
 			member.roles.remove("862238264752996372");
 		}
 	}
+
+  // here i need to check a database of messages to see if any ranked threads have been updated
 })
 
 client.login(process.env.BOT_TOKEN)
