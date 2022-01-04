@@ -17,8 +17,8 @@ const CHANNELS = {
     DOMINATION_DRAFT_CHANNEL: '710462330369998908', // going to use these 3 channel id's for activity check
     GRUDGE_MATCH_CHANNEL: '273005041877647371', 
     DOLPHIN_DRAFT_CHANNEL: '862333591265869846', 
-    RANKED_MSC_CHANNEL: '704845233279729798', // these may or may not be the same channels as #dom-draft / #grudge-match, depending
-    RANKED_SMS_CHANNEL: '896138179332149258', // on what GC wants to do
+    RANKED_MSC_CHANNEL: '896138179332149258', // these may or may not be the same channels as #dom-draft / #grudge-match, depending
+    RANKED_SMS_CHANNEL: '704845233279729798', // on what GC wants to do
     RANKED_MSCD_CHANNEL: '862333591265869846'
 }
 
