@@ -979,54 +979,56 @@ async function messageManager(msg) {
 			// if the channel is #ranked-msc or #ranked-sms then
       if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL || msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
         try {
-					sql.connect(config, function (err) {
-						var request = new sql.Request();
+					sql.connect(config, async function (err) {
+						var request = await new sql.Request();
             
-            let query = "exec QueueRanked @GameType, @Player";
+            let query = await "exec QueueRanked @GameType, @Player";
             
             if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
-						  request.input("GameType", sms); 
+						  await request.input("GameType", sms); 
             }
             else {
-              request.input("GameType", msc);
+              await request.input("GameType", msc);
             }
-            request.input("Player", "<@!" + msg.author.id + ">" + msg.author.username);
+            await request.input("Player", "<@!" + msg.author.id + ">" + msg.author.username);
 
-						request.query(query, function (err, recordset) {
+						await request.query(query, async function (err, recordset) {
 							if (err) {
 								console.log(err);
 								msg.react('❌');
 								errorHandler(err, msg);
 							}
 							else {
-								let data = recordset.recordset;
+								let data = await recordset.recordset;
 
-                if (data[0].Response != "")
+                console.log(data[0].RankedMatchID);
+
+                if (data[0].RankedMatchID != -1)
                 {
-                  msg.reply(data[0].Response);
+                  let thread = await msg.channel.threads.create({
+                    name: 'Ranked Match ' + String(data[0].RankedMatchID) + ' - ' + 
+                      data[0].P1Name + ' v ' + data[0].P2Name,
+                      autoArchiveDuration: 60,
+                      reason: String(data[0].RankedMatchID)
+                  });
+                  await thread.members.add(String(data[0].P1Did));
+                  await thread.members.add(String(data[0].P2Did));
+
+                  await thread.send('Welcome to a ranked match between ' + data[0].P1Ping + ' and ' + data[0].P2Ping + "! " + data[0].P1Ping + ' has been randomly selected to be home!');
+                  await thread.send("----------------------------");
+                  let homeMessage = await thread.send(data[0].P1Ping + "! Please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
+                  console.log(homeMessage);
+                  homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
+
+                  let awayMessage = await thread.send(data[0].P2Ping + "! As the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
+                  awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
+                  awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
                 }
                 else
                 {
                   // do nothing (i think)
                 }
-
-								if (recordset.recordset.length == 0) {
-									if (!CONSTANTS.EXTERNAL_BOT_COMMANDS.includes(token[0])) {
-										msg.channel.send(`>>> Oops, I couldn't find the command you were looking for! Head over to <#${CONSTANTS.CHANNELS.COMMAND_SANDBOX_CHANNEL}> and use *!sandbox* to see all my commands. If you have an idea for a new command use *!issuetracker* to suggest one.`)
-											.catch((err) => {
-												discordMessageErrorHandler(err, msg);
-											});
-									}
-								}
-								else {
-                  /*
-									msg.channel.send(recordset.recordset[0].Response)
-										.catch((err) => {
-											discordMessageErrorHandler(err, msg)
-
-										});
-                    */
-								}
+                
 							}
 						})
 					})
