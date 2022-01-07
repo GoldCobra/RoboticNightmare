@@ -1001,7 +1001,14 @@ async function messageManager(msg) {
 							else {
 								let data = recordset.recordset;
 
-                console.log(data.Response);
+                if (data[0].Response != "")
+                {
+                  msg.reply(data[0].Response);
+                }
+                else
+                {
+                  // do nothing (i think)
+                }
 
 								if (recordset.recordset.length == 0) {
 									if (!CONSTANTS.EXTERNAL_BOT_COMMANDS.includes(token[0])) {
