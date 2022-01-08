@@ -182,7 +182,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 
-	if (msg.guild.id == CONSTANTS.GUILD_ID) {
+	if (false) {
 		if (msg.channel.id) {
 			var token = msg.content.split(" ");
 			if (editMessageObj.currentAuth.length > 0) {
@@ -312,7 +312,7 @@ async function messageManager(msg) {
 				if (msg.bot)
 					return;
 
-				msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttps://mega.nz/file/jRtE3BSS#2X3IsWs_v9JxHe5L9altlbEzqHJCTf9FxJbJORWOkWc")
+				msg.author.send("Below is a link to the Wiimmfi-Patched MSC PAL ISO. Please do not share this link with anyone else!\n\nhttp://e.pc.cd/oB1otalK")
 					.catch((err) => {
 						discordMessageErrorHandler(err, msg)
 
@@ -972,6 +972,103 @@ async function messageManager(msg) {
 			}
 		}
 	}
+
+	else if (msg.guild.id == "611726672269541406") {    
+    var token = msg.content.split(" ");
+		if (token[0] == "!q") {
+			// if the channel is #ranked-msc or #ranked-sms then
+      if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL || msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
+        try {
+					sql.connect(config, async function (err) {
+						var request = await new sql.Request();
+            
+            let query = await "exec QueueRanked @GameType, @Player";
+            
+            if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
+						  await request.input("GameType", sms); 
+            }
+            else {
+              await request.input("GameType", msc);
+            }
+            await request.input("Player", "<@!" + msg.author.id + ">" + msg.author.username);
+
+						await request.query(query, async function (err, recordset) {
+							if (err) {
+								console.log(err);
+								msg.react('❌');
+								errorHandler(err, msg);
+							}
+							else {
+								let data = await recordset.recordset;
+
+                console.log(data[0].RankedMatchID);
+
+                if (data[0].RankedMatchID != -1)
+                {
+                  let thread = await msg.channel.threads.create({
+                    name: 'Ranked Match ' + String(data[0].RankedMatchID) + ' - ' + 
+                      data[0].P1Name + ' v ' + data[0].P2Name,
+                      autoArchiveDuration: 60,
+                      reason: String(data[0].RankedMatchID)
+                  });
+                  await thread.members.add(String(data[0].P1Did));
+                  await thread.members.add(String(data[0].P2Did));
+
+                  await thread.send('Welcome to a ranked match between ' + data[0].P1Ping + ' and ' + data[0].P2Ping + "! " + data[0].P1Ping + ' has been randomly selected to be home!');
+                  await thread.send("----------------------------");
+                  let homeMessage = await thread.send(data[0].P1Ping + "! Please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
+                  console.log(homeMessage);
+                  homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
+
+                  let awayMessage = await thread.send(data[0].P2Ping + "! As the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
+                  awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
+                  awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
+                }
+                else
+                {
+                  // do nothing (i think)
+                }
+                
+							}
+						})
+					})
+				}
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+					errorHandler(error, msg)
+				}
+        /*
+        msg.reply("ID: " + msg.author.id);
+        msg.reply("Name: " + msg.author.username);
+
+        let thread = await msg.channel.threads.create({
+          name: 'Ranked Match 1234 - Rocci v RocciTest',
+          autoArchiveDuration: 60,
+          reason: '1234'
+        });
+        await thread.members.add('321320322051866654');
+        await thread.members.add('897530390229680129');
+        let welcomeMessage = await thread.send('Welcome to a ranked match between <@!321320322051866654> and <@!897530390229680129>! <@!897530390229680129> has been randomly selected to be home!');
+        await thread.send("-----------------------");
+        let homeMessage = await thread.send("<@!897530390229680129> please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
+        homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
+        
+        let awayMessage = await thread.send("<@!321320322051866654> as the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
+        awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
+        awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
+        
+        thread.send(thread.id); // use this as the unique identier in the database
+        // stored procedure to add the user to the queue
+        // if the stored proc returns a user then the queue pops, randomly determine home/away
+        // otherwise
+        */
+      }
+      else {
+        msg.reply("You must start a ranked match from <#" + CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL + "> or <#" + CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL + ">, not here.");
+      }
+		}
+	}
 }
 
 const discordMessageErrorHandler = (err, msg) => {
@@ -1080,6 +1177,8 @@ client.on("messageReactionRemove", (reaction, user) => {
 			member.roles.remove("862238264752996372");
 		}
 	}
+
+  // here i need to check a database of messages to see if any ranked threads have been updated
 })
 
 client.login(process.env.BOT_TOKEN)
