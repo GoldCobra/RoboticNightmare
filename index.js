@@ -182,7 +182,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 
-	if (false) {
+	if (true) {
 		if (msg.channel.id) {
 			var token = msg.content.split(" ");
 			if (editMessageObj.currentAuth.length > 0) {
