@@ -1116,6 +1116,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		if (reaction.emoji.id == '712278814163730452') {
 			member.roles.add(role2);
 		}
+		if (reaction.emoji.id == EMOJIS.dolphinemu) {
+			member.roles.add(CONSTANTS.ROLES.MSC_DOLPHIN);
+		}
 	}
 
 	if (reaction.message.id == "896450908928507965") {
@@ -1153,6 +1156,9 @@ client.on("messageReactionRemove", (reaction, user) => {
 		if (reaction.emoji.id == '712278814163730452') {
 			console.log("mscball reaction removed")
 			member.roles.remove("680810288605298744");
+		}
+		if (reaction.emoji.id == EMOJIS.dolphinemu) {
+			member.roles.remove(CONSTANTS.ROLES.MSC_DOLPHIN)
 		}
 	}
 
