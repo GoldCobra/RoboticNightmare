@@ -278,6 +278,12 @@ async function messageManager(msg) {
 						discordMessageErrorHandler(err, msg);
 					});
 			}
+			else if (token[0] == "!help" || token[0] == "!setup") {
+				msg.channel.send("Btw, I recomend only having this .iso in your paths so Dolphin doesn’t get confused during netplay.")
+					.catch(err => {
+						discordMessageErrorHandler(err,msg);
+					})
+			}
 			else if (token[0] == "!robosend") {
 				fs.readFile('msg_send.txt', 'utf8', function (err, data) {
 					if (err) throw err;
