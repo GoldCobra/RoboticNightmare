@@ -973,24 +973,24 @@ async function messageManager(msg) {
 		}
 	}
 
-	else if (msg.guild.id == "611726672269541406") {    
-    var token = msg.content.split(" ");
+	else if (msg.guild.id == "611726672269541406") {
+		var token = msg.content.split(" ");
 		if (token[0] == "!q") {
 			// if the channel is #ranked-msc or #ranked-sms then
-      if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL || msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
-        try {
+			if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL || msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
+				try {
 					sql.connect(config, async function (err) {
 						var request = await new sql.Request();
-            
-            let query = await "exec QueueRanked @GameType, @Player";
-            
-            if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
-						  await request.input("GameType", sms); 
-            }
-            else {
-              await request.input("GameType", msc);
-            }
-            await request.input("Player", "<@!" + msg.author.id + ">" + msg.author.username);
+
+						let query = await "exec QueueRanked @GameType, @Player";
+
+						if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
+							await request.input("GameType", sms);
+						}
+						else {
+							await request.input("GameType", msc);
+						}
+						await request.input("Player", "<@!" + msg.author.id + ">" + msg.author.username);
 
 						await request.query(query, async function (err, recordset) {
 							if (err) {
@@ -1001,34 +1001,32 @@ async function messageManager(msg) {
 							else {
 								let data = await recordset.recordset;
 
-                console.log(data[0].RankedMatchID);
+								console.log(data[0].RankedMatchID);
 
-                if (data[0].RankedMatchID != -1)
-                {
-                  let thread = await msg.channel.threads.create({
-                    name: 'Ranked Match ' + String(data[0].RankedMatchID) + ' - ' + 
-                      data[0].P1Name + ' v ' + data[0].P2Name,
-                      autoArchiveDuration: 60,
-                      reason: String(data[0].RankedMatchID)
-                  });
-                  await thread.members.add(String(data[0].P1Did));
-                  await thread.members.add(String(data[0].P2Did));
+								if (data[0].RankedMatchID != -1) {
+									let thread = await msg.channel.threads.create({
+										name: 'Ranked Match ' + String(data[0].RankedMatchID) + ' - ' +
+											data[0].P1Name + ' v ' + data[0].P2Name,
+										autoArchiveDuration: 60,
+										reason: String(data[0].RankedMatchID)
+									});
+									await thread.members.add(String(data[0].P1Did));
+									await thread.members.add(String(data[0].P2Did));
 
-                  await thread.send('Welcome to a ranked match between ' + data[0].P1Ping + ' and ' + data[0].P2Ping + "! " + data[0].P1Ping + ' has been randomly selected to be home!');
-                  await thread.send("----------------------------");
-                  let homeMessage = await thread.send(data[0].P1Ping + "! Please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
-                  console.log(homeMessage);
-                  homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
+									await thread.send('Welcome to a ranked match between ' + data[0].P1Ping + ' and ' + data[0].P2Ping + "! " + data[0].P1Ping + ' has been randomly selected to be home!');
+									await thread.send("----------------------------");
+									let homeMessage = await thread.send(data[0].P1Ping + "! Please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
+									console.log(homeMessage);
+									homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
 
-                  let awayMessage = await thread.send(data[0].P2Ping + "! As the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
-                  awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
-                  awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
-                }
-                else
-                {
-                  // do nothing (i think)
-                }
-                
+									let awayMessage = await thread.send(data[0].P2Ping + "! As the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
+									awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
+									awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
+								}
+								else {
+									// do nothing (i think)
+								}
+
 							}
 						})
 					})
@@ -1038,35 +1036,35 @@ async function messageManager(msg) {
 					msg.react('❌');
 					errorHandler(error, msg)
 				}
-        /*
-        msg.reply("ID: " + msg.author.id);
-        msg.reply("Name: " + msg.author.username);
-
-        let thread = await msg.channel.threads.create({
-          name: 'Ranked Match 1234 - Rocci v RocciTest',
-          autoArchiveDuration: 60,
-          reason: '1234'
-        });
-        await thread.members.add('321320322051866654');
-        await thread.members.add('897530390229680129');
-        let welcomeMessage = await thread.send('Welcome to a ranked match between <@!321320322051866654> and <@!897530390229680129>! <@!897530390229680129> has been randomly selected to be home!');
-        await thread.send("-----------------------");
-        let homeMessage = await thread.send("<@!897530390229680129> please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
-        homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
-        
-        let awayMessage = await thread.send("<@!321320322051866654> as the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
-        awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
-        awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
-        
-        thread.send(thread.id); // use this as the unique identier in the database
-        // stored procedure to add the user to the queue
-        // if the stored proc returns a user then the queue pops, randomly determine home/away
-        // otherwise
-        */
-      }
-      else {
-        msg.reply("You must start a ranked match from <#" + CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL + "> or <#" + CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL + ">, not here.");
-      }
+				/*
+				msg.reply("ID: " + msg.author.id);
+				msg.reply("Name: " + msg.author.username);
+		
+				let thread = await msg.channel.threads.create({
+				  name: 'Ranked Match 1234 - Rocci v RocciTest',
+				  autoArchiveDuration: 60,
+				  reason: '1234'
+				});
+				await thread.members.add('321320322051866654');
+				await thread.members.add('897530390229680129');
+				let welcomeMessage = await thread.send('Welcome to a ranked match between <@!321320322051866654> and <@!897530390229680129>! <@!897530390229680129> has been randomly selected to be home!');
+				await thread.send("-----------------------");
+				let homeMessage = await thread.send("<@!897530390229680129> please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
+				homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
+			    
+				let awayMessage = await thread.send("<@!321320322051866654> as the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
+				awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
+				awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
+			    
+				thread.send(thread.id); // use this as the unique identier in the database
+				// stored procedure to add the user to the queue
+				// if the stored proc returns a user then the queue pops, randomly determine home/away
+				// otherwise
+				*/
+			}
+			else {
+				msg.reply("You must start a ranked match from <#" + CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL + "> or <#" + CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL + ">, not here.");
+			}
 		}
 	}
 }
@@ -1110,14 +1108,16 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	if (reaction.message.id == "896450856298381312") {
 		const role1 = "862237914863239198";
 		const role2 = "680810288605298744";
+		const dolphin = "890249419495211068";
 		if (reaction.emoji.name == '✅') {
 			member.roles.add(role1);
 		}
 		if (reaction.emoji.id == '712278814163730452') {
 			member.roles.add(role2);
 		}
-		if (reaction.emoji.id == EMOJIS.dolphinemu) {
-			member.roles.add(CONSTANTS.ROLES.MSC_DOLPHIN);
+		if (reaction.emoji.id == '890249419495211068') {
+			console.log('I found a dolphin one!');
+			member.roles.add('915981506898460742');
 		}
 	}
 
@@ -1157,8 +1157,8 @@ client.on("messageReactionRemove", (reaction, user) => {
 			console.log("mscball reaction removed")
 			member.roles.remove("680810288605298744");
 		}
-		if (reaction.emoji.id == EMOJIS.dolphinemu) {
-			member.roles.remove(CONSTANTS.ROLES.MSC_DOLPHIN)
+		if (reaction.emoji.id == '890249419495211068') {
+			member.roles.remove('915981506898460742')
 		}
 	}
 
@@ -1184,7 +1184,7 @@ client.on("messageReactionRemove", (reaction, user) => {
 		}
 	}
 
-  // here i need to check a database of messages to see if any ranked threads have been updated
+	// here i need to check a database of messages to see if any ranked threads have been updated
 })
 
 client.login(process.env.BOT_TOKEN)
