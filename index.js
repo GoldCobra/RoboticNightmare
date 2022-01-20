@@ -162,8 +162,8 @@ function getRankRolesPerUser() {
 
 				request.query(query, function (err, recordset) {
 					if (err) {
+						errorHandler(err)
 						console.log(err);
-						msg.react('❌');
 					}
 					else {
 						resolve(recordset.recordset);
@@ -1086,8 +1086,13 @@ const discordMessageErrorHandler = (err, msg) => {
 	}
 }
 
-const errorHandler = (err, msg, location = "internal") => {
+const errorHandler = (err, msg=false, location = "internal") => {
+	if (msg) {
 	msg.channel.send(`>>> Sorry, we got lost completing your request ${EMOJIS.mscwariodizzy}\n\nSupport for this bot can be reached through pinging *@Developer*`);
+	} else {
+		msg = {content: 'Internal Command'}
+	}
+
 	client.channels.cache.get(CONSTANTS.CHANNELS.DEBUG_CHANNEL)
 		.send(`----------\nError Message: ${err.message}\nCommand: ${msg.content}\nDate: ${new Date().toISOString()}\nLocation: ${location}\n\nStack Trace: ${err.stack}`)
 		.catch((err) => {
