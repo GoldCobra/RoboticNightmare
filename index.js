@@ -138,7 +138,7 @@ function getRatings(gametype) {
 				request.query(query, function (err, recordset) {
 					if (err) {
 						console.log(err);
-						throw (err)
+						errorHandler(err)
 					}
 					else {
 						resolve(recordset.recordset);
@@ -147,7 +147,7 @@ function getRatings(gametype) {
 				})
 			});
 		} catch (error) {
-			throw (error)
+			errorHandler(error)
 		}
 	})
 }
