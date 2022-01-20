@@ -172,7 +172,7 @@ function getRankRolesPerUser() {
 				})
 			});
 		} catch (error) {
-			errorHandler(err, msg)
+			errorHandler(error)
 		}
 	})
 }
