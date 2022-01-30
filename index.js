@@ -415,6 +415,34 @@ async function messageManager(msg) {
 					errorHandler(error, msg)
 				}
 			}
+			
+			// function removes one-off commands
+			else if (token[0] == "!cancelmatch") {
+				try {
+					sql.connect(config, function (err) {
+						var request = new sql.Request();
+
+						let query = "exec cancelMatch @mid";
+
+						request.input("mid", token[1]);
+
+						request.query(query, function (err, recordset) {
+							if (err) {
+								console.log(err)
+								errorHandler(err, msg)
+							}
+						});
+					})
+
+					msg.react('☑️');
+				}
+
+				catch (error) {
+					console.log(error);
+					msg.react('❌');
+					errorHandler(error, msg)
+				}
+			}
 
 			else if (token[0] == "!mscallcomp") {
 				p1LastSK = CONSTANTS.MSC_SK[Math.floor(Math.random() * CONSTANTS.MSC_SK.length)]
