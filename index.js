@@ -33,7 +33,7 @@ const rules = ['Items Off', 'Bowser Attack On', 'Everything On', 'Normal Competi
 client.on('guildMemberAdd', (member) => {
 	member.createDM()
 		.then(DM => DM.send(`Welcome to the server <@${member.id}>. Be sure to checkout the rules <#${CONSTANTS.CHANNELS.RULE_CHANNEL}> and visit <#${CONSTANTS.CHANNELS.SERVER_ROLES_CHANNEL}> to gain access to more channels.`)
-		.error((err) => {
+		.catch((err) => {
 			errorHandler(err);
 		}));
 });
