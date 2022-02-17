@@ -21,7 +21,7 @@ const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
 const { config } = require('./sql_config');
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -73,41 +73,7 @@ client.on('interactionCreate', async interaction => {
 client.on("ready", cronJob);
 
 async function cronJob() {
-	// set status to Playing at X, where X is a random stadium from MSC/SMS
-	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
-	rando = Math.floor(Math.random() * 17);
 
-	// set All active players ranks as roles
-	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
-	let ratings = [];
-	try {
-		ratings = await getRankRolesPerUser();
-	}
-	catch (err) {
-		console.log(err);
-	}
-
-	ratings.forEach(rating => {
-		const playerRole = rating.RoleID;
-		const playerID = rating.UserID;
-
-		guild.members.fetch(playerID)
-			.then((user) => {
-				if (user) {
-					try {
-						user._roles.forEach(role => {
-							if (CONSTANTS.PLAYER_ROLES.includes(role) && role != playerRole) {
-								user.roles.remove(role)
-							}
-						});
-						user.roles.add(playerRole);
-					}
-					catch (err) {
-						console.log("User doesn't exist");
-					}
-				}
-			})
-	});
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
