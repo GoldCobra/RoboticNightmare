@@ -4,6 +4,7 @@ const axios = require('axios')
 const { Client, Intents, Collection } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
+
 const msc = 1;
 const sms = 2;
 let editMessageObj = {
@@ -16,12 +17,14 @@ let editMessageObj = {
 	editChannelID: ''
 }
 
-
+const {smsCommands} = require('./commands/sms');
+const {mscCommands} = require ('./commands/msc');
+const {generalCommands, generalCommandButtonCallBacks} = require('./commands/commands')
 const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
 const { config } = require('./sql_config');
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -48,24 +51,45 @@ let rando = 0;
 const interval = 30;
 
 client.commands = new Collection()
-const commandFiles = fs.readdirSync('./commands')
-commandFiles.forEach(file => {
-	require(`./commands/${file}`).commands.forEach(command => client.commands.set(command.data.name, command))
-});
+
 
 
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
+	if (!interaction.isCommand()) {
+		if (interaction.componentType === 'BUTTON') {
+			if (interaction.message.interaction.commandName === 'sms') {
+				return;
+			} else if (interaction.message.interaction.commandName === 'msc') {
+				return;
+			} else {
+				return await generalCommandButtonCallBacks[interaction.customId](interaction);
+			}
+		} else {
+			return;
+		}
+	};
 
-	const command = client.commands.get(interaction.commandName);
-
-	if (!command) return;
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.log(error);
-		return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	if (interaction.commandName === 'sms') {
+		try {
+			return await smsCommands[interaction.options.getSubcommand()](interaction);
+		} catch (err) {
+			console.log(err)
+			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	} else if (interaction.commandName === 'msc'){
+		try {
+			return await mscCommands[interaction.options.getSubcommand()](interaction);
+		} catch (err) {
+			console.log(err)
+			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	} else {
+		try{
+			return await generalCommands[interaction.commandName](interaction);
+		} catch (err) {
+			console.log(err)
+			return interaction.reply({content: 'There was an error while executing this command!', ephemeral: true})
+		}
 	}
 });
 
@@ -149,7 +173,7 @@ function getRankRolesPerUser() {
 client.on("messageCreate", messageManager);
 
 async function messageManager(msg) {
-	if (msg.author.bot) return
+	return;
 
 	if (true) {
 		if (msg.channel.id) {

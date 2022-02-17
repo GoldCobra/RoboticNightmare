@@ -34,5 +34,6 @@ module.exports = {
     megastrike: "<a:megastrike:862605239025664000>",
     kekw: "<:kekw:908736619836755978>",
     mscwariodizzy: "<:mscwariodizzy:712282852594548777>",
-    dolphinemu: "<:dolphinemu:890249419495211068>"
+    dolphinemu: "<:dolphinemu:890249419495211068>",
+
 }
