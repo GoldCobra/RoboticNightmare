@@ -3,6 +3,9 @@ const axios = require('axios')
 
 const { Client, Intents, Collection } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const {MessageActionRow, MessageButton} = require('discord.js')
+
+
 
 const msc = 1;
 const sms = 2;
@@ -16,7 +19,9 @@ let editMessageObj = {
 	editChannelID: ''
 }
 
-
+const {smsCommands} = require('./commands/sms');
+const {mscCommands} = require ('./commands/msc');
+const {generalCommands, generalCommandButtonCallBacks} = require('./commands/commands')
 const CONSTANTS = require('./constants');
 const EMOJIS = require('./emoji');
 const { config } = require('./sql_config');
@@ -48,24 +53,46 @@ let rando = 0;
 const interval = 30;
 
 client.commands = new Collection()
-const commandFiles = fs.readdirSync('./commands')
-commandFiles.forEach(file => {
-	require(`./commands/${file}`).commands.forEach(command => client.commands.set(command.data.name, command))
-});
+
 
 
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
+	console.log(interaction)
+	if (!interaction.isCommand()) {
+		if (interaction.componentType === 'BUTTON') {
+			if (interaction.message.interaction) {
+			if (interaction.message.interaction.commandName === 'sms') {
+				return;
+			} else if (interaction.message.interaction.commandName === 'msc') {
+				return;
+				} 
+			}
+		} 	
+		return await generalCommandButtonCallBacks[interaction.customId](interaction);
+	};
 
-	const command = client.commands.get(interaction.commandName);
-
-	if (!command) return;
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.log(error);
-		return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	if (interaction.commandName === 'sms') {
+		try {
+			return await smsCommands[interaction.options.getSubcommand()](interaction);
+		} catch (err) {
+			console.log(err)
+			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	} else if (interaction.commandName === 'msc'){
+		try {
+			return await mscCommands[interaction.options.getSubcommand()](interaction);
+		} catch (err) {
+			console.log(err)
+			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
+	} else {
+		try{
+			return await generalCommands[interaction.commandName](interaction);
+		} catch (err) {
+			console.log('but')
+			console.log(err)
+			return interaction.reply({content: 'There was an error while executing this command!', ephemeral: true})
+		}
 	}
 });
 
@@ -73,7 +100,6 @@ client.on('interactionCreate', async interaction => {
 client.on("ready", cronJob);
 
 async function cronJob() {
-	
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
@@ -234,7 +260,6 @@ client.on("messageCreate", messageManager);
 
 async function messageManager(msg) {
 	if (msg.author.bot) return
-
 	if (true) {
 		if (msg.channel.id) {
 			var token = msg.content.split(" ");
@@ -687,6 +712,84 @@ async function messageManager(msg) {
 					msg.reply("tails!");
 			}
 
+			else if (token[0] === "!button") {
+				roleValidate = await roleValidator(client,msg.author.id,[CONSTANTS.ROLES.ADMIN,CONSTANTS.ROLES.DEVELOPER,CONSTANTS.ROLES.SERVER_STAFF]);
+
+				if (roleValidate) {
+				
+				const row1 = [new MessageActionRow()
+					.addComponents([
+						new MessageButton()
+						.setCustomId('msbl')
+						.setLabel('Mario Strikers Battle League')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('msc')
+						.setLabel('Mario Strikers Charged')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('sms')
+						.setLabel('Super Mario Strikers')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('tournaments')
+						.setLabel('Tournaments')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('modding')
+						.setLabel('Modding')
+						.setStyle('PRIMARY')
+					])
+				]
+				const row2 = [
+					new MessageActionRow()
+					.addComponents([
+						new MessageButton()
+						.setCustomId('msbllfg')
+						.setLabel('MSBL LFG')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('msclfg')
+						.setLabel('MSC LFG')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('mscdolphinlfg')
+						.setLabel('MSC Dolphin LFG')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('smslfg')
+						.setLabel('SMS LFG')
+						.setStyle('PRIMARY')
+					])
+				]
+				const row3 =[
+					new MessageActionRow()
+					.addComponents([
+						new MessageButton()
+						.setCustomId('msl')
+						.setLabel('MSL Announcements')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('msblspectator')
+						.setLabel('MSBL Spectator')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('mscspectator')
+						.setLabel('MSC Spectator')
+						.setStyle('PRIMARY'),
+						new MessageButton()
+						.setCustomId('smsspectator')
+						.setLabel('SMS Spectator')
+						.setStyle('PRIMARY')
+					])
+				]
+					msg.channel.send({content: `**If you wish to access more areas of the server, push the dedicated buttons below.**`, components:row1})
+					msg.channel.send({content:'**If you are looking for games and would like to notify/be notified for searching for opponents, select your specific game(s)**', components:row2})
+					msg.channel.send({content: `**Would you like to receive any of these notifications or announcements?**`, components: row3});
+				} else {
+					msg.channel.send(`Sorry you do not have the correct permissions for this command`);
+				}
+			}
 			// function displays the tier list for MSC
 			else if (token[0] == "!msctl") {
 				if (msg.bot) return;

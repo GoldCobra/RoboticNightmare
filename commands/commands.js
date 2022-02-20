@@ -1,69 +1,93 @@
 const {SlashCommandBuilder} = require('@discordjs/builders')
+const {MessageActionRow, MessageButton} = require('discord.js')
 const sql = require('mssql')
 const {config} = require('../sql_config');
+const {CHANNELS, ROLES} = require('../constants')
 
-const commands = [
-    {
-        data: new SlashCommandBuilder()
-        .setName('commands')
-        .setDescription("List of All Commands"),
 
-        async execute(interaction) {
-            interaction.reply({content:"All the commands", ephemeral: true})
-        }
-    },
-    {
-        data: new SlashCommandBuilder()
-        .setName('upsert')
-        .setDescription('Add/Update Command')
-        .addStringOption(option => option.setName('name').setDescription('Command Name'))
-        .addStringOption(option => option.setName('response').setDescription('Response to display with command'))
-        .setDefaultPermission(false),
+const generalCommands = {
+    'flip': async(interaction) => {
+				let x = Math.random();
 
-        async execute(interaction) {
-            try {
-                sql.connect(config, (err) => {
-                    const request = new sql.Request();
-                    const query = "exec UpsertCommand @token, @response"
-                    request.input('token', interaction.options.getString('name'));
-                    request.input('response', interaction.options.getString('response'));
-                    request.query(query, (err, recordset) => {           
-                        if (err) console.log(err) 
-                    });
-                });
-            interaction.reply({content:'☑️', ephemeral:true});
-            } catch (error) {
-                console.log(error);
-                interaction.reply({content:'❌', ephemeral:true});
+				if (x >= .5)
+					interaction.reply("heads!");
+				else
+					interaction.reply("tails!");
             }
-        }
-    },
-    {
-        data: new SlashCommandBuilder()
-        .setName('remove-command')
-        .setDescription('Remove command from database')
-        .addStringOption(option => option.setName('command').setDescription('Command To Be Removed'))
-        .setDefaultPermission(false),
+        
+}
 
-        async execute(interaction) {
-            try {
-                sql.connect(config, (err) => {
-                    const request = new sql.Request()
-                    const query = "delete from discordCommands where token = @token"
-                    request.input('token', `!${interaction.options.getString('command')}`)
-                    request.query(query, (err, recordset) => {
-                        if (err) console.log(err)
-                    });
-                });
-            interaction.reply({content:'☑️', ephemeral:true});
-            } catch (error) {
-                console.log(error);
-                interaction.reply({content:'❌', ephemeral:true});
-            }
-        }
+const generalCommandButtonCallBacks = {
+    'msc': async(interaction) => {
+        roleHelper(interaction, ROLES.MSC_FAN);
+    },
+    'msclfg': async(interaction) => {
+        roleHelper(interaction, ROLES.MSC_PLAYER);
+    },
+    'mscdolphinlfg': async(interaction) => {
+        roleHelper(interaction, ROLES.MSC_DOLPHIN);
+    },
+    'sms': async(interaction) => {
+        roleHelper(interaction, ROLES.SMS_FAN);
+    },
+    'smslfg': async(interaction) => {
+        roleHelper(interaction, ROLES.SMS_PLAYER);
+    },
+    'tournaments': async(interaction) => {
+        roleHelper(interaction, ROLES.TOURNAMENT);
+    },
+    'modding': async(interaction) => {
+        roleHelper(interaction, ROLES.MODDING);
+    },
+    'msbl': async(interaction) => {
+        roleHelper(interaction, ROLES.MSBL);
+    },
+    'msbllfg': async(interaction) => {
+        roleHelper(interaction, ROLES.MSBL_LFG);
+    },
+    'smsspectator': async(interaction) => {
+        roleHelper(interaction,ROLES.SMS_SPECTATOR);
+    },
+    'mscspectator': async(interaction) => {
+        roleHelper(interaction,ROLES.MSC_SPECTATOR);
+    },
+    'msblspectator': async(interaction) => {
+        roleHelper(interaction, ROLES.MSBL_SPECTATOR);
     }
+}
 
-
+const roleHelper = (interaction, role) => {
+    const user = interaction.member;
+    try {
+        if (user._roles.includes(role)) {
+            user.roles.remove(role)
+            .then(() => {
+                interaction.reply({content: `We succesfully removed <@&${role}>`, ephemeral: true});
+            })
+            .catch(() => {
+                interaction.reply({content: `We were unsuccesful removing <@&${role}>`, ephemeral:true});
+            })
+        } else {
+            user.roles.add(role)
+            .then(() => {
+                interaction.reply({content: `We succesfully added <@&${role}>`, ephemeral:true});
+            })
+            .catch(() => {
+                interaction.reply({content:`We were unsuccesful adding <@&${role}>`, ephemeral:true});
+            })
+        }
+    } catch (err) {
+        interaction.reply('Role was not updated :(')
+        interaction.deleteReply();
+    }
+}
+const generalCommandsRegister = [
+    new SlashCommandBuilder()
+    .setName('flip')
+    .setDescription('Flip a coin'),
+    new SlashCommandBuilder()
+    .setName('buttons')
+    .setDescription('Buttons :)')
 ]
 
-module.exports = {commands}
+module.exports = {generalCommandsRegister, generalCommands, generalCommandButtonCallBacks}
