@@ -100,7 +100,40 @@ client.on('interactionCreate', async interaction => {
 client.on("ready", cronJob);
 
 async function cronJob() {
+	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
+	rando = Math.floor(Math.random() * 17);
 
+	// set All active players ranks as roles
+	const guild = client.guilds.cache.get(CONSTANTS.GUILD_ID);
+	let ratings = [];
+	try {
+		ratings = await getRankRolesPerUser();
+	}
+	catch (err) {
+		console.log(err);
+	}
+
+	ratings.forEach(rating => {
+		const playerRole = rating.RoleID;
+		const playerID = rating.UserID;
+
+		guild.members.fetch(playerID)
+			.then((user) => {
+				if (user) {
+					try {
+						user._roles.forEach(role => {
+							if (CONSTANTS.PLAYER_ROLES.includes(role) && role != playerRole) {
+								user.roles.remove(role)
+							}
+						});
+						user.roles.add(playerRole);
+					}
+					catch (err) {
+						console.log("User doesn't exist");
+					}
+				}
+			})
+	});
 	// repeat every X minutes, where X is interval's value
 	setTimeout(cronJob, 60000 * interval);
 }
@@ -176,6 +209,7 @@ function getRankRolesPerUser() {
 client.on("messageCreate", messageManager);
 
 async function messageManager(msg) {
+	if (msg.author.bot) return
 	if (true) {
 		if (msg.channel.id) {
 			var token = msg.content.split(" ");
