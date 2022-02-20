@@ -84,10 +84,7 @@ const roleHelper = (interaction, role) => {
 const generalCommandsRegister = [
     new SlashCommandBuilder()
     .setName('flip')
-    .setDescription('Flip a coin'),
-    new SlashCommandBuilder()
-    .setName('buttons')
-    .setDescription('Buttons :)')
+    .setDescription('Flip a coin')
 ]
 
 module.exports = {generalCommandsRegister, generalCommands, generalCommandButtonCallBacks}

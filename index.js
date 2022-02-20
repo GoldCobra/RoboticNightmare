@@ -57,7 +57,8 @@ client.commands = new Collection()
 
 
 client.on('interactionCreate', async interaction => {
-	console.log(interaction)
+	console.log(smsCommands['rating'])
+
 	if (!interaction.isCommand()) {
 		if (interaction.componentType === 'BUTTON') {
 			if (interaction.message.interaction) {
@@ -73,14 +74,15 @@ client.on('interactionCreate', async interaction => {
 
 	if (interaction.commandName === 'sms') {
 		try {
-			return await smsCommands[interaction.options.getSubcommand()](interaction);
+			console.log(smsCommands['rating'])
+			return await smsCommands[interaction.options._subcommand](interaction);
 		} catch (err) {
 			console.log(err)
 			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
 	} else if (interaction.commandName === 'msc'){
 		try {
-			return await mscCommands[interaction.options.getSubcommand()](interaction);
+			return await mscCommands[interaction.options._subcommand](interaction);
 		} catch (err) {
 			console.log(err)
 			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
@@ -97,7 +99,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 
-client.on("ready", cronJob);
+client.on("ready", () => {});
 
 async function cronJob() {
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
@@ -211,7 +213,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 	if (true) {
-		if (msg.channel.id) {
+		if (msg.channel.id == process.env.TEST_CHANNEL2) {
 			var token = msg.content.split(" ");
 			if (editMessageObj.currentAuth.length > 0) {
 				if (editMessageObj.currentAuth == msg.author.id && msg.channel.id == editMessageObj.originChannel.id) {

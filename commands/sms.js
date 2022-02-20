@@ -56,31 +56,31 @@ smsRegisterCommands = [new SlashCommandBuilder()
 
 
 smsCommands = {
-	'smsrating': async (interaction) => {
-		try {
-			sql.connect(config, (err) => {
-				const request = new sql.Request();
-				const query = 'exec GetRatingsForDiscord @gametype';
-				request.input('gametype', sms);
-				request.query(query, (err, recordset) => {
-					if (err) {
-						console.log(err);
-						interaction.reply('❌')
-					} else {
-						let smsRatings = ''
-						recordset.recordset.forEach((record) => {
-							smsRatings += `${record.line}\n`
-						})
-						interaction.reply(smsRatings)
-					}
-				});
-			});
-		} catch (error) {
-			console.log(error);
-			interaction.reply('❌')
-		}
-	},
-	'mslsms': async (interaction) => {
+    'rating': async(interaction) => {
+        try {
+            data = await getRatings(sms)
+            const chunkSize = 20;
+            const chunkHolder = []
+            const numChunks = Math.floor(data.length / chunkSize);
+            for (let i = 0; i < numChunks; i++) {
+                chunk = data.slice(i * chunkSize, i + 1 * chunkSize);
+                chunkHolder.push(chunk.map(x => x.line));
+            }
+            if (data.length % chunkSize !== 0) {
+                chunk = data.slice(numChunks * chunkSize, data.length);
+                chunkHolder.push(chunk.map(x => x.line));
+            }
+            chunkHolder.forEach((chunk) => {
+                interaction.reply(chunk.join('\n'))
+                    .catch((err) => {
+                       console.log(err)
+                    });
+            });
+        } catch (err) {
+            console.log(err)
+        }
+    },
+	'msl': async (interaction) => {
 		const url4 = "https://docs.google.com/spreadsheets/d/1elh4wTVHNR0dv-QNklaNLMUNU07VKuaFkZkU9G2XWQ0/gviz/tq?";
 
 			if (msg.bot) return;
@@ -108,7 +108,7 @@ smsCommands = {
 					console.log(error);
 				});
 	},
-	'smsreport': async(interaction) => {
+	'report': async(interaction) => {
 		try {
 			const p1 = interaction.options.getUser('p1').username;
 			const p2 = interaction.options.getUser('p2').username;
@@ -129,10 +129,20 @@ smsCommands = {
 			interaction.reply('❌')
 		}
 	},
+	'tierlist': async(interaction) => {
+		interaction.reply.send("https://media.discordapp.net/attachments/790895921989812254/912453085253763072/TierList_SMS_Captain_3.png")
+					.catch((err) => {
+						discordMessageErrorHandler(err, msg)
+					});
+				interaction.followUp("https://media.discordapp.net/attachments/790895921989812254/912453085622833212/TierList_SMS_Sidekick_2.png")
+					.catch((err) => {
+						discordMessageErrorHandler(err, msg)
+					});
+	},
 	'randomrule': async(interaction) => {
 		interaction.reply(rules[Math.floor(Math.random() * rules.length)]);
 	},
-	'smsallcomp': async(interaction) => {
+	'allcomp': async(interaction) => {
 		p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 		remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
 		p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
@@ -144,7 +154,7 @@ smsCommands = {
 				console.log(err)
 			});
 	},
-	'smsallrandom': async(interaction) => {
+	'allrandom': async(interaction) => {
 		p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 		remainingCaptains = CONSTANTS.SMS_CAPTAIN.filter(captain => captain !== p1Captain)
 		p2Captain = remainingCaptains[Math.floor(Math.random() * remainingCaptains.length)]
@@ -172,7 +182,7 @@ smsCommands = {
 
 			})
 	},
-	'smscompteam': async(interaction) => {
+	'compteam': async(interaction) => {
 		p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 
 		interaction.reply(`>>> ${EMOJIS[p1Captain]} ${EMOJIS.smstoad}`)
@@ -181,7 +191,7 @@ smsCommands = {
 
 			});
 	},
-	'smsrandomteam': async(interaction) => {
+	'randomteam': async(interaction) => {
 		p1Captain = CONSTANTS.SMS_CAPTAIN[Math.floor(Math.random() * CONSTANTS.SMS_CAPTAIN.length)]
 				p1SK = CONSTANTS.SMS_SK[Math.floor(Math.random() * CONSTANTS.SMS_SK.length)];
 				interaction.reply(`>>> ${EMOJIS[p1Captain]} ${EMOJIS[p1SK]}`)
@@ -190,7 +200,7 @@ smsCommands = {
 
 					});
 	},
-	'smsrandomstage': async(interaction) => {
+	'randomstage': async(interaction) => {
 		interaction.reply(`>>> **${CONSTANTS.SMS_ALL_STADIUMS[Math.floor(Math.random() * CONSTANTS.SMS_ALL_STADIUMS.length)]}**`)
 		.catch((err) => {
 			console.log(err)
