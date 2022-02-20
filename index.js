@@ -99,7 +99,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 
-client.on("ready", () => {});
+client.on("ready", cronJob);
 
 async function cronJob() {
 	// set status to Playing at X, where X is a random stadium from MSC/SMS
@@ -263,7 +263,7 @@ client.on("messageCreate", messageManager);
 async function messageManager(msg) {
 	if (msg.author.bot) return
 	if (true) {
-		if (msg.channel.id == process.env.TEST_CHANNEL2) {
+		if (msg.channel.id) {
 			var token = msg.content.split(" ");
 			if (editMessageObj.currentAuth.length > 0) {
 				if (editMessageObj.currentAuth == msg.author.id && msg.channel.id == editMessageObj.originChannel.id) {
