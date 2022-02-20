@@ -723,8 +723,9 @@ async function messageManager(msg) {
 					.addComponents([
 						new MessageButton()
 						.setCustomId('msbl')
-						.setLabel('Mario Strikers Battle League')
-						.setStyle('PRIMARY'),
+						.setLabel('Mario Strikers: Battle League')
+						.setEmoji('944220435401277451')
+						.setStyle('SECONDARY'),
 						new MessageButton()
 						.setCustomId('msc')
 						.setLabel('Mario Strikers Charged')
