@@ -100,6 +100,7 @@ client.on('interactionCreate', async interaction => {
 client.on("ready", cronJob);
 
 async function cronJob() {
+	// set status to Playing at X, where X is a random stadium from MSC/SMS
 	client.user.setActivity('at ' + stadiums[rando], { type: 'PLAYING' });
 	rando = Math.floor(Math.random() * 17);
 
@@ -188,6 +189,55 @@ function getRankRolesPerUser() {
 				var request = new sql.Request();
 
 				let query = "exec GetDiscordRankRolesByUserID";
+
+				request.query(query, function (err, recordset) {
+					if (err) {
+						errorHandler(err)
+						console.log(err);
+					}
+					else {
+						resolve(recordset.recordset);
+					}
+
+				})
+			});
+		} catch (error) {
+			errorHandler(error)
+		}
+	})
+}
+
+function reportScore(command, p1, p2, score, channel, tournament, stage) {
+	let gametype = -1;
+
+	return new Promise((resolve, reject) => {
+		try {
+			sql.connect(config, function (err) {
+				var request = new sql.Request();
+
+				let query = "exec reportScore @gametype, @p1, @p2, @score, null, '', '', 0, @c";
+				
+				if (command.startsWith("!msc")) {
+					gametype = msc;
+				}
+				else if (command.startsWith("!sms")) {
+					gametype = sms;
+				}
+				request.input("p1", p1);
+				request.input("p2", p2);
+				request.input("score", score);
+				request.input("c", channel);
+
+				if (command.startsWith("!prepare")) {
+					// i have no idea what this does or why it works
+					gametype = command.slice(-1);
+					
+					query = "exec reportScore @gametype, @p1, @p2, @score, null, @t, @s, 1, @c";
+					request.input("t", tournament);
+					request.input("s", stage);
+				}
+
+				request.input("gametype", gametype);
 
 				request.query(query, function (err, recordset) {
 					if (err) {
@@ -886,7 +936,7 @@ async function messageManager(msg) {
 			}
 
 			// function allows the user to report the score for a tournament (or ranked, eventually) match
-			else if (token[0] == "!mscreport") {
+			else if (token[0] == "!mscreport" || token[0] == "!smsreport") {
 				if (msg.bot) return;
 				try {
 					let score = "";
@@ -910,33 +960,13 @@ async function messageManager(msg) {
 					console.log(p1);
 					console.log(p2);
 					console.log(token.length);
-
-					sql.connect(config, function (err) {
-						// create the request object
-						var request = new sql.Request();
-
-						let query = "";
-
-						if (token.length == 4)
-							query = "exec reportScore @gametype, @p1, @p2, @score;"
-
-						console.log(query);
-
-						request.input("gametype", msc);
-						request.input("p1", p1);
-						request.input("p2", p2);
-						request.input("score", score);
-
-						request.query(query, function (err, recordset) {
-							if (err) {
-								console.log(err)
-								errorHandler(err, msg);
-							}
-						})
-					})
-
-					// todo: broken, need to fix - also, add X or something if it fails
-					msg.react('☑️');
+					try {
+						await reportScore(token[0], p1, p2, score, msg.channel.name);
+						msg.react("☑️");
+					}
+					catch (err) {
+						msg.react("❌")
+					}
 				}
 				catch (error) {
 					console.log(error);
@@ -967,93 +997,17 @@ async function messageManager(msg) {
 					let gametype = token[1];
 					let tournament = token[4];
 					let stage = token[5];
+					let score = "0-0";
 
-					sql.connect(config, function (err) {
-						// create the request object
-						var request = new sql.Request();
-
-						let query = "";
-
-						if (token.length == 6)
-							query = "exec reportScore @gametype, @p1, @p2, @score, null, @t, @s, 1;"
-
-						console.log(query);
-
-						request.input("gametype", gametype);
-						request.input("p1", p1);
-						request.input("p2", p2);
-						request.input("score", "0-0");
-						request.input("t", tournament);
-						request.input("s", stage);
-
-						request.query(query, function (err, recordset) {
-							if (err) {
-								console.log(err)
-								errorHandler(err, msg);
-							}
-						})
-					})
-
-					msg.react('☑️');
-				}
-				catch (error) {
-					console.log(error);
-					msg.react('❌');
-					errorHandler(error, msg)
-				}
-			}
-
-			// function allows the user to report the score for a tournament (or ranked, eventually) match
-			else if (token[0] == "!smsreport") {
-				if (msg.bot) return;
-				try {
-					let score = "";
-
-					// get the score and the discord ids if available
-					let p1 = client.users.cache.get(token[1].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
-					score = token[2];
-					let p2 = client.users.cache.get(token[3].replace("<", "").replace(">", "").replace("@", "").replace("!", ""));
-
-					// set the paramters - if the token isn't a discord tag, just get the text, otherwise get the id and username
-					if (p1 == undefined)
-						p1 = token[1];
-					else
-						p1 = token[1] + p1.username;
-
-					if (p2 == undefined)
-						p2 = token[3];
-					else
-						p2 = token[3] + p2.username;
-
-					console.log(p1);
-					console.log(p2);
-					console.log(token.length);
-
-					sql.connect(config, function (err) {
-						// create the request object
-						var request = new sql.Request();
-
-						let query = "";
-
-						if (token.length == 4)
-							query = "exec reportScore @gametype, @p1, @p2, @score;"
-
-						console.log(query);
-
-						request.input("gametype", sms);
-						request.input("p1", p1);
-						request.input("p2", p2);
-						request.input("score", score);
-
-						request.query(query, function (err, recordset) {
-							if (err) {
-								console.log(err)
-								errorHandler(err, msg);
-							}
-						})
-					})
-
-					msg.react('☑️');
+					try {
+						await reportScore(token[0] + String(gametype), p1, p2, score, msg.channel.name, tournament, stage);
+						msg.react("☑️");
+					}
+					catch (err) {
+						console.log(err);
+						msg.react("❌")
+						errorHandler(err, msg)
+					}
 				}
 				catch (error) {
 					console.log(error);
@@ -1112,101 +1066,7 @@ async function messageManager(msg) {
 			}
 		}
 	}
-
-	else if (msg.guild.id == "611726672269541406") {
-		var token = msg.content.split(" ");
-		if (token[0] == "!q") {
-			// if the channel is #ranked-msc or #ranked-sms then
-			if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL || msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
-				try {
-					sql.connect(config, async function (err) {
-						var request = await new sql.Request();
-
-						let query = await "exec QueueRanked @GameType, @Player";
-
-						if (msg.channel.id == CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL) {
-							await request.input("GameType", sms);
-						}
-						else {
-							await request.input("GameType", msc);
-						}
-						await request.input("Player", "<@!" + msg.author.id + ">" + msg.author.username);
-
-						await request.query(query, async function (err, recordset) {
-							if (err) {
-								console.log(err);
-								msg.react('❌');
-								errorHandler(err, msg);
-							}
-							else {
-								let data = await recordset.recordset;
-
-								console.log(data[0].RankedMatchID);
-
-								if (data[0].RankedMatchID != -1) {
-									let thread = await msg.channel.threads.create({
-										name: 'Ranked Match ' + String(data[0].RankedMatchID) + ' - ' +
-											data[0].P1Name + ' v ' + data[0].P2Name,
-										autoArchiveDuration: 60,
-										reason: String(data[0].RankedMatchID)
-									});
-									await thread.members.add(String(data[0].P1Did));
-									await thread.members.add(String(data[0].P2Did));
-
-									await thread.send('Welcome to a ranked match between ' + data[0].P1Ping + ' and ' + data[0].P2Ping + "! " + data[0].P1Ping + ' has been randomly selected to be home!');
-									await thread.send("----------------------------");
-									let homeMessage = await thread.send(data[0].P1Ping + "! Please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
-									console.log(homeMessage);
-									homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
-
-									let awayMessage = await thread.send(data[0].P2Ping + "! As the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
-									awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
-									awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
-								}
-								else {
-									// do nothing (i think)
-								}
-
-							}
-						})
-					})
-				}
-				catch (error) {
-					console.log(error);
-					msg.react('❌');
-					errorHandler(error, msg)
-				}
-				/*
-				msg.reply("ID: " + msg.author.id);
-				msg.reply("Name: " + msg.author.username);
-		
-				let thread = await msg.channel.threads.create({
-				  name: 'Ranked Match 1234 - Rocci v RocciTest',
-				  autoArchiveDuration: 60,
-				  reason: '1234'
-				});
-				await thread.members.add('321320322051866654');
-				await thread.members.add('897530390229680129');
-				let welcomeMessage = await thread.send('Welcome to a ranked match between <@!321320322051866654> and <@!897530390229680129>! <@!897530390229680129> has been randomly selected to be home!');
-				await thread.send("-----------------------");
-				let homeMessage = await thread.send("<@!897530390229680129> please react below to choose the stadium. 🇧 for Bowser Stadium, 🏫 for The Classroom, 🔥 for The Lava Pit, 💎 for Crystal Canyon.");
-				homeMessage.react('🏫'); homeMessage.react('🔥'); homeMessage.react('💎'); homeMessage.react('🇧');
-			    
-				let awayMessage = await thread.send("<@!321320322051866654> as the away player, you get first choice of captain, please choose from these options:  🇲  🇱  🇵  🇩  🇧  🇼  <:yoshishock:742832879473786913> ");
-				awayMessage.react('🇲'); awayMessage.react('🇱'); awayMessage.react('🇵'); awayMessage.react('🇩');
-				awayMessage.react('🇧'); awayMessage.react('🇼'); awayMessage.react('742832879473786913');
-			    
-				thread.send(thread.id); // use this as the unique identier in the database
-				// stored procedure to add the user to the queue
-				// if the stored proc returns a user then the queue pops, randomly determine home/away
-				// otherwise
-				*/
-			}
-			else {
-				msg.reply("You must start a ranked match from <#" + CONSTANTS.CHANNELS.RANKED_MSC_CHANNEL + "> or <#" + CONSTANTS.CHANNELS.RANKED_SMS_CHANNEL + ">, not here.");
-			}
-		}
-	}
+	
 }
 
 const discordMessageErrorHandler = (err, msg) => {
@@ -1236,6 +1096,7 @@ const errorHandler = (err, msg=false, location = "internal") => {
 
 //REACTION ROLES
 client.on('messageReactionAdd', async (reaction, user) => {
+
 	console.log("new Reaction add");
 	// When a reaction is received, check if the structure is partial
 	if (reaction.partial) {
@@ -1328,8 +1189,6 @@ client.on("messageReactionRemove", (reaction, user) => {
 			member.roles.remove("862238264752996372");
 		}
 	}
-
-	// here i need to check a database of messages to see if any ranked threads have been updated
 })
 
 client.login(process.env.BOT_TOKEN)
