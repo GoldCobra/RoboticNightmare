@@ -57,7 +57,8 @@ client.commands = new Collection()
 
 
 client.on('interactionCreate', async interaction => {
-	console.log(interaction)
+	console.log(smsCommands['rating'])
+
 	if (!interaction.isCommand()) {
 		if (interaction.componentType === 'BUTTON') {
 			if (interaction.message.interaction) {
@@ -73,14 +74,15 @@ client.on('interactionCreate', async interaction => {
 
 	if (interaction.commandName === 'sms') {
 		try {
-			return await smsCommands[interaction.options.getSubcommand()](interaction);
+			console.log(smsCommands['rating'])
+			return await smsCommands[interaction.options._subcommand](interaction);
 		} catch (err) {
 			console.log(err)
 			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
 	} else if (interaction.commandName === 'msc'){
 		try {
-			return await mscCommands[interaction.options.getSubcommand()](interaction);
+			return await mscCommands[interaction.options._subcommand](interaction);
 		} catch (err) {
 			console.log(err)
 			return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
